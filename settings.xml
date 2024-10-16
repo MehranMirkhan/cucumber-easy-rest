@@ -5,8 +5,8 @@
     <servers>
         <server>
             <id>ossrh</id>
-            <username>${OSSRH_USERNAME}</username>
-            <password>${OSSRH_TOKEN}</password>
+            <username>${username}</username>
+            <password>${password}</password>
         </server>
     </servers>
 </settings>
