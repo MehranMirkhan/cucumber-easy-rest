@@ -48,6 +48,14 @@
         </developer>
     </developers>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub MehranMirkhan Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/MehranMirkhan/cucumber-rest-spring</url>
+        </repository>
+    </distributionManagement>
+
     <dependencies>
         <!--    Spring    -->
         <dependency>
@@ -103,5 +111,4 @@
             <version>3.14.0</version>
         </dependency>
     </dependencies>
-
 </project>
