@@ -11,16 +11,23 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v4
-#      - name: Set up Java for publishing to Maven Central Repository
-#        uses: actions/setup-java@v4
-#        with:
-#          java-version: '21'
-#          distribution: 'temurin'
-#          server-id: central
-#          server-username: ${{secrets.OSSRH_USERNAME}}
-#          server-password: ${{secrets.OSSRH_TOKEN}}
+      - name: Set up Java for publishing to Maven Central Repository
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          server-id: central
+          server-username: OSSRH_USERNAME # env variable for username in deploy
+          server-password: OSSRH_TOKEN # env variable for token in deploy
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }} # Value of the GPG private key to import
+          gpg-passphrase: GPG_PASSPHRASE # env variable for GPG private key passphrase
       - name: Publish to the Maven Central Repository
         run: mvn -Dusername=${{secrets.OSSRH_USERNAME}} -Dpassword=${{secrets.OSSRH_TOKEN}} -Dpassphrase=${{secrets.GPG_PASSPHRASE}} deploy -s settings.xml
+        env:
+            OSSRH_USERNAME: ${{secrets.OSSRH_USERNAME}}
+            OSSRH_TOKEN: ${{secrets.OSSRH_TOKEN}}
+            GPG_PASSPHRASE: ${{secrets.GPG_PASSPHRASE}}
+            GPG_PRIVATE_KEY: ${{secrets.GPG_PRIVATE_KEY}}
 #      - name: Set up Java for publishing to GitHub Packages
 #        uses: actions/setup-java@v4
 #        with:
