@@ -49,11 +49,6 @@
     </developers>
 
     <distributionManagement>
-        <!--        <repository>-->
-        <!--            <id>github</id>-->
-        <!--            <name>GitHub MehranMirkhan Apache Maven Packages</name>-->
-        <!--            <url>https://maven.pkg.github.com/MehranMirkhan/cucumber-rest-spring</url>-->
-        <!--        </repository>-->
         <repository>
             <id>central</id>
             <name>Central Repository OSSRH</name>
@@ -74,7 +69,6 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
