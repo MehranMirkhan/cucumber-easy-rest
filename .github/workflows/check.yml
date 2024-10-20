@@ -14,4 +14,6 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
       - name: Check project compiles
-        run: ./mvnw --batch-mode verify
+        run: ./mvnw --batch-mode clean install
+      - name: Check core example
+        run: cd examples/example-core && ./mvnw --batch-mode clean test
