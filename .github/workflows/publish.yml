@@ -22,7 +22,7 @@ jobs:
           gpg-private-key: ${{secrets.GPG_PRIVATE_KEY}}
           gpg-passphrase: GPG_PASSPHRASE
       - name: Publish to the Maven Central Repository
-        run: ./mvnw --batch-mode -Dusername=${{secrets.OSSRH_USERNAME}} -Dpassword=${{secrets.OSSRH_TOKEN}} -Dpassphrase=${{secrets.GPG_PASSPHRASE}} -Prelease-sign-artifacts clean deploy
+        run: ./mvnw --batch-mode -Prelease-sign-artifacts clean deploy
         env:
           OSSRH_USERNAME: ${{secrets.OSSRH_USERNAME}}
           OSSRH_TOKEN: ${{secrets.OSSRH_TOKEN}}
