@@ -23,10 +23,10 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           server-id: central
-          server-username: OSSRH_USERNAME
-          server-password: OSSRH_TOKEN
-          gpg-private-key: GPG_PRIVATE_KEY
-          gpg-passphrase: GPG_PASSPHRASE
+          server-username: ${{secrets.OSSRH_USERNAME}}
+          server-password: ${{secrets.OSSRH_TOKEN}}
+          gpg-private-key: ${{secrets.GPG_PRIVATE_KEY}}
+          gpg-passphrase: ${{secrets.GPG_PASSPHRASE}}
       - name: List keys
         run: gpg -K
       - name: Publish to the Maven Central Repository
