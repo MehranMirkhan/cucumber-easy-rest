@@ -1,9 +1,6 @@
 name: Check code validity
 on:
   pull_request:
-    types:
-      - opened
-      - synchronize
   push:
     branches:
       - main
@@ -17,4 +14,4 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
       - name: Check project compiles
-        run: mvn --batch-mode verify
+        run: ./mvnw --batch-mode verify
