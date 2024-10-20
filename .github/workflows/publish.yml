@@ -24,12 +24,12 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           server-id: central
-          server-username: ${{secrets.OSSRH_USERNAME}}
-          server-password: ${{secrets.OSSRH_TOKEN}}
-          gpg-private-key: ${{secrets.GPG_PRIVATE_KEY}}
-          gpg-passphrase: ${{secrets.GPG_PASSPHRASE}}
+          server-username: OSSRH_USERNAME
+          server-password: OSSRH_TOKEN
+          gpg-private-key: GPG_PRIVATE_KEY
+          gpg-passphrase: GPG_PASSPHRASE
       - name: Publish to the Maven Central Repository
-        run: ./mvnw -Dusername=${{secrets.OSSRH_USERNAME}} -Dpassword=${{secrets.OSSRH_TOKEN}} -Dpassphrase=${{secrets.GPG_PASSPHRASE}} -s settings.xml -Prelease-sign-artifacts clean deploy
+        run: ./mvnw --batch-mode -Dusername=${{secrets.OSSRH_USERNAME}} -Dpassword=${{secrets.OSSRH_TOKEN}} -Dpassphrase=${{secrets.GPG_PASSPHRASE}} -s settings.xml -Prelease-sign-artifacts clean deploy
         env:
           OSSRH_USERNAME: ${{secrets.OSSRH_USERNAME}}
           OSSRH_TOKEN: ${{secrets.OSSRH_TOKEN}}
