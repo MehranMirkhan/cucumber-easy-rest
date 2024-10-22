@@ -1,2 +1,2 @@
-# cucumber-rest-spring
+# cucumber-easy-rest
 REST syntax for Cucumber

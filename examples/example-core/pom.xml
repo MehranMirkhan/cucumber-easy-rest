@@ -12,7 +12,7 @@
     <groupId>com.example</groupId>
     <artifactId>example-core</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Cucumber REST Spring - Core Example</name>
+    <name>Cucumber easy REST - Core Example</name>
     <description>Examples for Core functionality</description>
 
     <properties>
@@ -31,9 +31,9 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/MehranMirkhan/cucumber-rest-spring</url>
-        <connection>scm:git:git@github.com:MehranMirkhan/cucumber-rest-spring.git</connection>
-        <developerConnection>scm:git:git@github.com:MehranMirkhan/cucumber-rest-spring.git</developerConnection>
+        <url>https://github.com/MehranMirkhan/cucumber-easy-rest</url>
+        <connection>scm:git:git@github.com:MehranMirkhan/cucumber-easy-rest.git</connection>
+        <developerConnection>scm:git:git@github.com:MehranMirkhan/cucumber-easy-rest.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
@@ -48,7 +48,7 @@
     <dependencies>
         <dependency>
             <groupId>io.github.mehranmirkhan</groupId>
-            <artifactId>cucumber-rest-spring</artifactId>
+            <artifactId>cucumber-easy-rest</artifactId>
             <version>0.0.1</version>
             <scope>test</scope>
         </dependency>
