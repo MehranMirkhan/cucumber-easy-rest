@@ -14,5 +14,5 @@ import org.springframework.boot.test.context.SpringBootTest;
 @ConfigurationParameter(key = Constants.PLUGIN_PROPERTY_NAME, value = "pretty")
 @SpringBootTest
 @CucumberContextConfiguration
-class CucumberRestSpringExampleCoreApplicationTests {
+class CucumberEasyRestExampleCoreApplicationTests {
 }

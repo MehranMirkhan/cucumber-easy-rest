@@ -17,8 +17,8 @@ import org.springframework.context.annotation.Import;
         StringHelper.class,
         RestHelper.class,
 })
-public class CucumberRestSpringAutoConfiguration {
-    public CucumberRestSpringAutoConfiguration() {
+public class CucumberEasyRestAutoConfiguration {
+    public CucumberEasyRestAutoConfiguration() {
         log.info("Cucumber REST is loaded.");
     }
 

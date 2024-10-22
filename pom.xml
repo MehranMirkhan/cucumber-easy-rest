@@ -11,9 +11,9 @@
     </parent>
 
     <groupId>io.github.mehranmirkhan</groupId>
-    <artifactId>cucumber-rest-spring</artifactId>
+    <artifactId>cucumber-easy-rest</artifactId>
     <version>0.0.1</version>
-    <name>Cucumber REST Spring</name>
+    <name>Cucumber easy REST</name>
     <description>REST syntax for Cucumber</description>
 
     <packaging>jar</packaging>
@@ -34,9 +34,9 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/MehranMirkhan/cucumber-rest-spring</url>
-        <connection>scm:git:git@github.com:MehranMirkhan/cucumber-rest-spring.git</connection>
-        <developerConnection>scm:git:git@github.com:MehranMirkhan/cucumber-rest-spring.git</developerConnection>
+        <url>https://github.com/MehranMirkhan/cucumber-easy-rest</url>
+        <connection>scm:git:git@github.com:MehranMirkhan/cucumber-easy-rest.git</connection>
+        <developerConnection>scm:git:git@github.com:MehranMirkhan/cucumber-easy-rest.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
