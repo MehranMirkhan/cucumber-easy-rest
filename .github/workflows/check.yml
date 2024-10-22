@@ -17,3 +17,5 @@ jobs:
         run: ./mvnw --batch-mode clean install
       - name: Check core example
         run: cd examples/example-core && ./mvnw --batch-mode clean test
+      - name: Check full example
+        run: cd examples/example-full && ./mvnw --batch-mode clean test
