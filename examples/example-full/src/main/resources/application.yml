@@ -1,0 +1,5 @@
+com:
+  example:
+    auth:
+      default-admin-username: admin
+      default-admin-password: admin
