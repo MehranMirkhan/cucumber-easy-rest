@@ -66,6 +66,7 @@ pom.xml:
     <groupId>com.github.mehranmirkhan</groupId>
     <artifactId>cucumber-easy-rest</artifactId>
     <version>0.0.1</version>
+    <scope>test</scope>
 </dependency>
 ```
 
