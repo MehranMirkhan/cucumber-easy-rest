@@ -65,7 +65,7 @@ pom.xml:
 <dependency>
     <groupId>com.github.mehranmirkhan</groupId>
     <artifactId>cucumber-easy-rest</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -73,7 +73,7 @@ pom.xml:
 build.gradle:
 ```gradle
 dependencies {
-    testImplementation 'com.github.mehranmirkhan:cucumber-easy-rest:0.0.1'
+    testImplementation 'com.github.mehranmirkhan:cucumber-easy-rest:0.0.2'
 }
 ```
 
@@ -112,7 +112,7 @@ Feature: Users CRUD
     Given user:
       | username | roles          |
       | admin    | ["ROLE_ADMIN"] |
-    When PUT /users/{userId}:
+    When PUT /users/&(userId):
       | firstName |
       | Jack      |
     Then status is 200
