@@ -10,67 +10,67 @@ import org.junit.jupiter.api.Assertions;
 public class AssertionHelperStepDefs {
     private final HelpersManager helpersManager;
 
-    @Then("^(\\S+) = (\\S+)$")
+    @Then("^([^\\$\\s]+) = (\\S+)$")
     public void assertEq(String lhs, String rhs) {
         lhs = helpersManager.processString(lhs);
         rhs = helpersManager.processString(rhs);
         Assertions.assertEquals(rhs, lhs);
     }
 
-    @Then("^(\\S+) != (\\S+)$")
+    @Then("^([^\\$\\s]+) != (\\S+)$")
     public void assertNotEq(String lhs, String rhs) {
         lhs = helpersManager.processString(lhs);
         rhs = helpersManager.processString(rhs);
         Assertions.assertNotEquals(rhs, lhs);
     }
 
-    @Then("^(\\S+) > (\\S+)$")
+    @Then("^([^\\$\\s]+) > (\\S+)$")
     public void assertGt(String lhs, String rhs) {
         lhs = helpersManager.processString(lhs);
         rhs = helpersManager.processString(rhs);
         Assertions.assertTrue(Double.parseDouble(lhs) > Double.parseDouble(rhs));
     }
 
-    @Then("^(\\S+) >= (\\S+)$")
+    @Then("^([^\\$\\s]+) >= (\\S+)$")
     public void assertGe(String lhs, String rhs) {
         lhs = helpersManager.processString(lhs);
         rhs = helpersManager.processString(rhs);
         Assertions.assertTrue(Double.parseDouble(lhs) >= Double.parseDouble(rhs));
     }
 
-    @Then("^(\\S+) < (\\S+)$")
+    @Then("^([^\\$\\s]+) < (\\S+)$")
     public void assertLt(String lhs, String rhs) {
         lhs = helpersManager.processString(lhs);
         rhs = helpersManager.processString(rhs);
         Assertions.assertTrue(Double.parseDouble(lhs) < Double.parseDouble(rhs));
     }
 
-    @Then("^(\\S+) <= (\\S+)$")
+    @Then("^([^\\$\\s]+) <= (\\S+)$")
     public void assertLe(String lhs, String rhs) {
         lhs = helpersManager.processString(lhs);
         rhs = helpersManager.processString(rhs);
         Assertions.assertTrue(Double.parseDouble(lhs) <= Double.parseDouble(rhs));
     }
 
-    @Then("^(\\S+) is null$")
+    @Then("^([^\\$\\s]+) is null$")
     public void assertNull(String v) {
         v = helpersManager.processString(v);
         Assertions.assertNull(v);
     }
 
-    @Then("^(\\S+) is not null$")
+    @Then("^([^\\$\\s]+) is not null$")
     public void assertNotNull(String v) {
         v = helpersManager.processString(v);
         Assertions.assertNotNull(v);
     }
 
-    @Then("^(\\S+) is empty")
+    @Then("^([^\\$\\s]+) is empty")
     public void assertEmpty(String v) {
         v = helpersManager.processString(v);
         Assertions.assertTrue(StringUtils.isEmpty(v));
     }
 
-    @Then("^(\\S+) is not empty")
+    @Then("^([^\\$\\s]+) is not empty")
     public void assertNotEmpty(String v) {
         v = helpersManager.processString(v);
         Assertions.assertTrue(StringUtils.isNotEmpty(v));

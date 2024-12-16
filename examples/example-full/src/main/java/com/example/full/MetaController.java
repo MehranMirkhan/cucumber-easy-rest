@@ -10,11 +10,11 @@ public class MetaController {
     Health getHealth(@RequestHeader(value = "lang", required = false) String lang,
                      @RequestHeader(value = "cookie", required = false) String cookie,
                      @RequestBody(required = false) Health.Request body) {
-        return Health.builder().status(Health.Status.UP).lang(lang).cookie(cookie).body(body).build();
+        return Health.builder().status(Health.Status.UP).lang(lang).cookie(cookie).body(body).load(0.8).build();
     }
 
     @Builder
-    record Health(Status status, String lang, String cookie, Request body) {
+    record Health(Status status, String lang, String cookie, Request body, Double load) {
         enum Status {UP, DOWN}
 
         record Request(String name, Gender gender) {

@@ -3,7 +3,6 @@ package io.github.mehranmirkhan.cucumber.rest.mvc;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
-import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.github.mehranmirkhan.cucumber.rest.HelpersManager;
 import io.github.mehranmirkhan.cucumber.rest.core.ContextHelper;
@@ -15,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.*;
 
@@ -24,6 +22,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @Getter
 @RequiredArgsConstructor
 public class RestHelperStepDefs {
+    public static final String JSON_PATH_REGEX = "(\\$[.|\\[]?\\S*)";
+
     private final HelpersManager helpersManager;
     private final ObjectMapper   mapper;
     private final MockMvc        mvc;
@@ -31,21 +31,15 @@ public class RestHelperStepDefs {
     private final RestHelper    restHelper;
     private final ContextHelper contextHelper;
 
-    @When("^(GET|POST|PUT|PATCH|DELETE) ([^:\\s]*)((?: -H [^=]+=[^=:]+)*)$")
+    @When("^(GET|POST|PUT|PATCH|DELETE) (\\S+)((?: -H [^=]+=[^=]+)*)(?<!:)$")
     public void mvcRequestWithoutBody(String method, String path, String headers) {
         mvcRequest(method, path, headers, List.of());
     }
 
-    @When("^(GET|POST|PUT|PATCH|DELETE) (\\S+)((?: -H [^=]+=[^=:]+)*):$")
+    @When("^(GET|POST|PUT|PATCH|DELETE) (\\S+)((?: -H [^=]+=[^=]+)*):$")
     public void mvcRequestWithBody(String method, String path, String headers,
                                    List<Map<String, String>> body) {
         mvcRequest(method, path, headers, body);
-    }
-
-    @SneakyThrows
-    @Then("status is {int}")
-    public void checkStatus(int status) {
-        restHelper.getLastResult().andExpect(MockMvcResultMatchers.status().is(status));
     }
 
     @SneakyThrows
