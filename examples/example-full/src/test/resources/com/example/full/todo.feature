@@ -11,12 +11,12 @@ Feature: Todo
     When GET /todo
     Then status is 200
     And $.content is empty
-    And $.content has size 0
+    And $.content has_size 0
     When POST /todo:
       | text  | done  |
       | task1 | false |
     Then status is 201
-    Given Set todoId = $.id
+    Given todoId <- $.id
     When GET /todo/&(todoId)
     Then status is 200
     And $.text = task1
@@ -24,7 +24,7 @@ Feature: Todo
     When GET /todo
     Then status is 200
     And $.content is not empty
-    And $.content has size 1
+    And $.content has_size 1
     And $.numberOfElements = 1
     And $.numberOfElements > 0
     And $.content has a match text = task1

@@ -8,7 +8,7 @@ Feature: MVC feature
     Then status is 200
     And $.status = UP
     And $.lang = en
-    And $.cookie is empty
+    And $.cookie is null
     And $.load > 0.1
     When GET /public/meta/health:
       | name   |

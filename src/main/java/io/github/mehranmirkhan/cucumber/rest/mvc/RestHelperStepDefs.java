@@ -3,6 +3,7 @@ package io.github.mehranmirkhan.cucumber.rest.mvc;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
+import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.github.mehranmirkhan.cucumber.rest.HelpersManager;
 import io.github.mehranmirkhan.cucumber.rest.core.ContextHelper;
@@ -14,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.*;
 
@@ -40,6 +42,12 @@ public class RestHelperStepDefs {
     public void mvcRequestWithBody(String method, String path, String headers,
                                    List<Map<String, String>> body) {
         mvcRequest(method, path, headers, body);
+    }
+
+    @SneakyThrows
+    @Then("status is {int}")
+    public void checkStatus(int status) {
+        restHelper.getLastResult().andExpect(MockMvcResultMatchers.status().is(status));
     }
 
     @SneakyThrows

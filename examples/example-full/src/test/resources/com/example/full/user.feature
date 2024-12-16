@@ -12,7 +12,7 @@ Feature: User CRUD
       | username | password | roles         |
       | john     | 123456   | ["ROLE_USER"] |
     Then status is 201
-    Given Set userId = $.id
+    Given userId <- $.id
     When GET /admin/user/&(userId)
     Then status is 200
     And $.username = john
