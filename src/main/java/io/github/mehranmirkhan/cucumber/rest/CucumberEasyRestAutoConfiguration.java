@@ -3,6 +3,7 @@ package io.github.mehranmirkhan.cucumber.rest;
 import io.github.mehranmirkhan.cucumber.rest.core.ContextHelper;
 import io.github.mehranmirkhan.cucumber.rest.core.RandHelper;
 import io.github.mehranmirkhan.cucumber.rest.core.StringHelper;
+import io.github.mehranmirkhan.cucumber.rest.core.TypeProcessor;
 import io.github.mehranmirkhan.cucumber.rest.mvc.RestHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.Import;
         RandHelper.class,
         StringHelper.class,
         RestHelper.class,
+        TypeProcessor.class,
 })
 public class CucumberEasyRestAutoConfiguration {
     public CucumberEasyRestAutoConfiguration() {

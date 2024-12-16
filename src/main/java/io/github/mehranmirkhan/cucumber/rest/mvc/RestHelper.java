@@ -1,7 +1,6 @@
 package io.github.mehranmirkhan.cucumber.rest.mvc;
 
 import com.jayway.jsonpath.JsonPath;
-import io.github.mehranmirkhan.cucumber.rest.CucumberHelper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -20,8 +19,8 @@ import java.util.regex.Pattern;
 @Order(7)
 @Component
 @RequiredArgsConstructor
-public class RestHelper implements CucumberHelper {
-    private static final Pattern JSON_PATTERN = Pattern.compile("(\\$[.\\[]?\\S*)");
+public class RestHelper {
+    public static final Pattern JSON_PATTERN = Pattern.compile("(\\$[.\\[]?\\S*)");
 
     private ResultActions lastResult;
 
@@ -39,14 +38,10 @@ public class RestHelper implements CucumberHelper {
                        .orElse(null);
     }
 
-    @Override
-    public String processString(String s) {
+    public Object processResponse(String s) {
         Matcher matcher = JSON_PATTERN.matcher(s);
         if (!matcher.matches()) return s;
         String group = matcher.group();
-        s = Optional.ofNullable(JsonPath.compile(group).read(getLastResponse()))
-                    .map(Object::toString)
-                    .orElse(null);
-        return s;
+        return JsonPath.compile(group).read(getLastResponse());
     }
 }

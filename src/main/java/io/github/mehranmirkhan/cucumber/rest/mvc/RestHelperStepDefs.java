@@ -24,6 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @Getter
 @RequiredArgsConstructor
 public class RestHelperStepDefs {
+    public static final String JSON_PATH_REGEX = "(\\$[.|\\[]?\\S*)";
+
     private final HelpersManager helpersManager;
     private final ObjectMapper   mapper;
     private final MockMvc        mvc;
@@ -31,12 +33,12 @@ public class RestHelperStepDefs {
     private final RestHelper    restHelper;
     private final ContextHelper contextHelper;
 
-    @When("^(GET|POST|PUT|PATCH|DELETE) ([^:\\s]*)((?: -H [^=]+=[^=:]+)*)$")
+    @When("^(GET|POST|PUT|PATCH|DELETE) (\\S+)((?: -H [^=]+=[^=]+)*)(?<!:)$")
     public void mvcRequestWithoutBody(String method, String path, String headers) {
         mvcRequest(method, path, headers, List.of());
     }
 
-    @When("^(GET|POST|PUT|PATCH|DELETE) (\\S+)((?: -H [^=]+=[^=:]+)*):$")
+    @When("^(GET|POST|PUT|PATCH|DELETE) (\\S+)((?: -H [^=]+=[^=]+)*):$")
     public void mvcRequestWithBody(String method, String path, String headers,
                                    List<Map<String, String>> body) {
         mvcRequest(method, path, headers, body);

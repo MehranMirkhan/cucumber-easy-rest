@@ -24,7 +24,7 @@ public class HelpersManager {
                        .orElse(List.of())
                        .stream()
                        .reduce(s,
-                               (str, helper) -> StringUtils.isEmpty(str) ? str : helper.processString(str),
+                               (str, helper) -> StringUtils.isEmpty(str) ? str : helper.processString(str.trim()),
                                (str1, str2) -> str2);
     }
 
