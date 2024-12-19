@@ -8,6 +8,7 @@ Feature: User CRUD
     Then status is 200
     And $.content is not empty
     And $.content[0].deleted = false
+    And $.content[0].deleted == &bool(false)
     When POST /admin/user:
       | username | password | roles         |
       | john     | 123456   | ["ROLE_USER"] |
