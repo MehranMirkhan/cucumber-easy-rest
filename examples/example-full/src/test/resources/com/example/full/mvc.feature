@@ -28,3 +28,11 @@ Feature: MVC feature
     And $.cookie contains_ic Bc
     And $.body.name = Mehran
     And $.body.gender = MALE
+
+  Scenario: Upload file
+    When POST /public/file/upload -F[myFile] text.txt=Hello, World!
+    Then status is 200
+    And $ = Hello, World!
+    When POST /public/file/upload -F[myFile] text.txt=0x48656C6C6F2C20576F726C6421
+    Then status is 200
+    And $ = Hello, World!
