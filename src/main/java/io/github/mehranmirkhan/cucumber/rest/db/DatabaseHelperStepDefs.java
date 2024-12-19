@@ -17,6 +17,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.support.Repositories;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -30,8 +31,7 @@ public class DatabaseHelperStepDefs {
     private final ObjectMapper        mapper;
 
     @Given("^records for (\\w[\\w\\d]*):$")
-    public void recordsForTable(String entityName, List<Map<String, String>> records)
-            throws NoSuchFieldException, IllegalAccessException {
+    public void recordsForTable(String entityName, List<Map<String, String>> records) throws IllegalAccessException {
         Class<?>      entityClass = findEntityClass(entityName);
         JpaRepository repo        = getRepository(entityClass);
 
@@ -44,6 +44,35 @@ public class DatabaseHelperStepDefs {
             Object id = idField.get(entity);
             contextHelper.getVariables().put("id" + i + 1, String.valueOf(id));
         }
+    }
+
+    @Given("^delete records for (\\w[\\w\\d]*)$")
+    public void deleteAllRecordsForTable(String entityName) {
+        deleteRecordsForTable(entityName, List.of());
+    }
+
+    @Given("^delete records for (\\w[\\w\\d]*):$")
+    public void deleteRecordsForTable(String entityName, List<Map<String, String>> examples) {
+        Class<?>      entityClass = findEntityClass(entityName);
+        JpaRepository repo        = getRepository(entityClass);
+
+        if (examples.isEmpty()) {
+            repo.deleteAll();
+            return;
+        }
+
+        List<?> exampleList = helpersManager.parseBody(examples, entityClass);
+        var matcher = ExampleMatcher.matching()
+                                    .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
+                                    .withIgnoreNullValues()
+                                    .withIgnoreCase();
+        List<?> entities = exampleList.stream()
+                                      .map(example -> mapper.convertValue(example, entityClass))
+                                      .map(entity -> Example.of(entity, matcher))
+                                      .map(example -> repo.findAll(example))
+                                      .flatMap(Collection::stream)
+                                      .toList();
+        repo.deleteAll(entities);
     }
 
     @Given("^find (\\w[\\w\\d]*):$")

@@ -1,13 +1,16 @@
 Feature: Todo
 
-  Scenario: CRUD
+  Background:
+    Given username <- &rand_a(4)
     Given find Role:
       | name      |
       | ROLE_USER |
     Given records for User:
-      | username | password | roles           |
-      | u1       | 123456   | [{"id": &(id)}] |
-    Given user u1 with role ROLE_USER
+      | username    | password | roles           |
+      | &(username) | 123456   | [{"id": &(id)}] |
+    Given user &(username) with role ROLE_USER
+
+  Scenario: CRUD
     When GET /todo
     Then status is 200
     And $.content is empty
@@ -47,5 +50,19 @@ Feature: Todo
     And $.done = true
     When DELETE /todo/&(todoId)
     Then status is 200
+    When GET /todo/&(todoId)
+    Then status is 404
+
+  Scenario: Delete record
+    When POST /todo:
+      | text        | done  |
+      | Buy grocery | false |
+    Then status is 201
+    Given todoId <- $.id
+    When GET /todo/&(todoId)
+    Then status is 200
+    Given delete records for Todo:
+      | id        |
+      | &(todoId) |
     When GET /todo/&(todoId)
     Then status is 404
