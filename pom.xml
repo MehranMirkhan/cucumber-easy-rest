@@ -12,7 +12,7 @@
 
     <groupId>io.github.mehranmirkhan</groupId>
     <artifactId>cucumber-easy-rest</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.3</version>
     <name>Cucumber easy REST</name>
     <description>REST syntax for Cucumber</description>
 

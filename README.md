@@ -65,7 +65,7 @@ pom.xml:
 <dependency>
     <groupId>com.github.mehranmirkhan</groupId>
     <artifactId>cucumber-easy-rest</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -73,7 +73,7 @@ pom.xml:
 build.gradle:
 ```gradle
 dependencies {
-    testImplementation 'com.github.mehranmirkhan:cucumber-easy-rest:0.0.2'
+    testImplementation 'com.github.mehranmirkhan:cucumber-easy-rest:0.0.3'
 }
 ```
 
@@ -108,7 +108,7 @@ Feature: Users CRUD
     When GET /users?name=John
     Then status is 200
     And $.content[0].name = John
-    Given Set userId = $.content[0].id
+    Given userId <- $.content[0].id
     Given user:
       | username | roles          |
       | admin    | ["ROLE_ADMIN"] |
