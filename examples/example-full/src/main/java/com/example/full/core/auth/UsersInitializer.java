@@ -14,8 +14,8 @@ import java.util.Set;
 @Component
 @RequiredArgsConstructor
 public class UsersInitializer {
-    private final Params   params;
-    private final UserRepo userRepo;
+    private final Params      params;
+    private final UserRepo    userRepo;
     private final UserService userService;
 
     @PostConstruct

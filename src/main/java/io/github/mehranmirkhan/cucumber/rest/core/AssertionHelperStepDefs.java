@@ -12,9 +12,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @RequiredArgsConstructor
 public class AssertionHelperStepDefs {
-    private static final String LHS_PATTERN        = "(\\S+)";
-    private static final String RHS_PATTERN        = "(.+)";
-    private static final String LIST_MATCH_PATTERN = "(has a match|has no match|all match)";
+    private static final String LHS_PATTERN = "(\\S+)";
+    private static final String RHS_PATTERN = "(.+)";
 
     private final HelpersManager helpersManager;
     private final TypeProcessor  typeProcessor;
@@ -31,6 +30,8 @@ public class AssertionHelperStepDefs {
     public enum ListMatch {
         HAS_A_MATCH, HAS_NO_MATCH, ALL_MATCH;
 
+        static final String PATTERN = "(has a match|has no match|all match)";
+
         static ListMatch of(String name) {
             if (name == null) return null;
             return switch (name) {
@@ -42,102 +43,102 @@ public class AssertionHelperStepDefs {
         }
     }
 
-    @Then("^" + LHS_PATTERN + "\\s?" + LIST_MATCH_PATTERN + "?\\s?" + LHS_PATTERN + "?" + " = " + RHS_PATTERN + "$")
+    @Then("^" + LHS_PATTERN + "\\s?" + ListMatch.PATTERN + "?\\s?" + LHS_PATTERN + "?" + " = " + RHS_PATTERN + "$")
     public void assertEq(String lhs, String listMatch, String listKey, String rhs) {
         check(lhs, ListMatch.of(listMatch), listKey, Operator.SOFT_EQUAL, rhs);
     }
 
-    @Then("^" + LHS_PATTERN + "\\s?" + LIST_MATCH_PATTERN + "?\\s?" + LHS_PATTERN + "?" + " == " + RHS_PATTERN + "$")
+    @Then("^" + LHS_PATTERN + "\\s?" + ListMatch.PATTERN + "?\\s?" + LHS_PATTERN + "?" + " == " + RHS_PATTERN + "$")
     public void assertEqExact(String lhs, String listMatch, String listKey, String rhs) {
         check(lhs, ListMatch.of(listMatch), listKey, Operator.EQUAL, rhs);
     }
 
-    @Then("^" + LHS_PATTERN + "\\s?" + LIST_MATCH_PATTERN + "?\\s?" + LHS_PATTERN + "?" + " != " + RHS_PATTERN + "$")
+    @Then("^" + LHS_PATTERN + "\\s?" + ListMatch.PATTERN + "?\\s?" + LHS_PATTERN + "?" + " != " + RHS_PATTERN + "$")
     public void assertNotEq(String lhs, String listMatch, String listKey, String rhs) {
         check(lhs, ListMatch.of(listMatch), listKey, Operator.NOT_EQUAL, rhs);
     }
 
-    @Then("^" + LHS_PATTERN + "\\s?" + LIST_MATCH_PATTERN + "?\\s?" + LHS_PATTERN + "?" + " > " + RHS_PATTERN + "$")
+    @Then("^" + LHS_PATTERN + "\\s?" + ListMatch.PATTERN + "?\\s?" + LHS_PATTERN + "?" + " > " + RHS_PATTERN + "$")
     public void assertGt(String lhs, String listMatch, String listKey, String rhs) {
         check(lhs, ListMatch.of(listMatch), listKey, Operator.GREATER_THAN, rhs);
     }
 
-    @Then("^" + LHS_PATTERN + "\\s?" + LIST_MATCH_PATTERN + "?\\s?" + LHS_PATTERN + "?" + " >= " + RHS_PATTERN + "$")
+    @Then("^" + LHS_PATTERN + "\\s?" + ListMatch.PATTERN + "?\\s?" + LHS_PATTERN + "?" + " >= " + RHS_PATTERN + "$")
     public void assertGe(String lhs, String listMatch, String listKey, String rhs) {
         check(lhs, ListMatch.of(listMatch), listKey, Operator.GREATER_THAN_OR_EQUAL, rhs);
     }
 
-    @Then("^" + LHS_PATTERN + "\\s?" + LIST_MATCH_PATTERN + "?\\s?" + LHS_PATTERN + "?" + " < " + RHS_PATTERN + "$")
+    @Then("^" + LHS_PATTERN + "\\s?" + ListMatch.PATTERN + "?\\s?" + LHS_PATTERN + "?" + " < " + RHS_PATTERN + "$")
     public void assertLt(String lhs, String listMatch, String listKey, String rhs) {
         check(lhs, ListMatch.of(listMatch), listKey, Operator.LESS_THAN, rhs);
     }
 
-    @Then("^" + LHS_PATTERN + "\\s?" + LIST_MATCH_PATTERN + "?\\s?" + LHS_PATTERN + "?" + " <= " + RHS_PATTERN + "$")
+    @Then("^" + LHS_PATTERN + "\\s?" + ListMatch.PATTERN + "?\\s?" + LHS_PATTERN + "?" + " <= " + RHS_PATTERN + "$")
     public void assertLe(String lhs, String listMatch, String listKey, String rhs) {
         check(lhs, ListMatch.of(listMatch), listKey, Operator.LESS_THAN_OR_EQUAL, rhs);
     }
 
-    @Then("^" + LHS_PATTERN + "\\s?" + LIST_MATCH_PATTERN + "?\\s?" + LHS_PATTERN + "?" + " has_size " + RHS_PATTERN + "$")
+    @Then("^" + LHS_PATTERN + "\\s?" + ListMatch.PATTERN + "?\\s?" + LHS_PATTERN + "?" + " has_size " + RHS_PATTERN + "$")
     public void assertSize(String lhs, String listMatch, String listKey, String rhs) {
         check(lhs, ListMatch.of(listMatch), listKey, Operator.HAS_SIZE, rhs);
     }
 
-    @Then("^" + LHS_PATTERN + "\\s?" + LIST_MATCH_PATTERN + "?\\s?" + LHS_PATTERN + "?" + " contains " + RHS_PATTERN + "$")
+    @Then("^" + LHS_PATTERN + "\\s?" + ListMatch.PATTERN + "?\\s?" + LHS_PATTERN + "?" + " contains " + RHS_PATTERN + "$")
     public void assertContains(String lhs, String listMatch, String listKey, String rhs) {
         check(lhs, ListMatch.of(listMatch), listKey, Operator.CONTAINS, rhs);
     }
 
-    @Then("^" + LHS_PATTERN + "\\s?" + LIST_MATCH_PATTERN + "?\\s?" + LHS_PATTERN + "?" + " contains_ic " + RHS_PATTERN + "$")
+    @Then("^" + LHS_PATTERN + "\\s?" + ListMatch.PATTERN + "?\\s?" + LHS_PATTERN + "?" + " contains_ic " + RHS_PATTERN + "$")
     public void assertContainsIgnoreCase(String lhs, String listMatch, String listKey, String rhs) {
         check(lhs, ListMatch.of(listMatch), listKey, Operator.CONTAINS_IC, rhs);
     }
 
-    @Then("^" + LHS_PATTERN + "\\s?" + LIST_MATCH_PATTERN + "?\\s?" + LHS_PATTERN + "?" + " starts_with " + RHS_PATTERN + "$")
+    @Then("^" + LHS_PATTERN + "\\s?" + ListMatch.PATTERN + "?\\s?" + LHS_PATTERN + "?" + " starts_with " + RHS_PATTERN + "$")
     public void assertStartsWith(String lhs, String listMatch, String listKey, String rhs) {
         check(lhs, ListMatch.of(listMatch), listKey, Operator.STARTS_WITH, rhs);
     }
 
-    @Then("^" + LHS_PATTERN + "\\s?" + LIST_MATCH_PATTERN + "?\\s?" + LHS_PATTERN + "?" + " starts_with_ic " + RHS_PATTERN + "$")
+    @Then("^" + LHS_PATTERN + "\\s?" + ListMatch.PATTERN + "?\\s?" + LHS_PATTERN + "?" + " starts_with_ic " + RHS_PATTERN + "$")
     public void assertStartsWithIgnoreCase(String lhs, String listMatch, String listKey, String rhs) {
         check(lhs, ListMatch.of(listMatch), listKey, Operator.STARTS_WITH_IC, rhs);
     }
 
-    @Then("^" + LHS_PATTERN + "\\s?" + LIST_MATCH_PATTERN + "?\\s?" + LHS_PATTERN + "?" + " ends_with " + RHS_PATTERN + "$")
+    @Then("^" + LHS_PATTERN + "\\s?" + ListMatch.PATTERN + "?\\s?" + LHS_PATTERN + "?" + " ends_with " + RHS_PATTERN + "$")
     public void assertEndsWith(String lhs, String listMatch, String listKey, String rhs) {
         check(lhs, ListMatch.of(listMatch), listKey, Operator.ENDS_WITH, rhs);
     }
 
-    @Then("^" + LHS_PATTERN + "\\s?" + LIST_MATCH_PATTERN + "?\\s?" + LHS_PATTERN + "?" + " ends_with_ic " + RHS_PATTERN + "$")
+    @Then("^" + LHS_PATTERN + "\\s?" + ListMatch.PATTERN + "?\\s?" + LHS_PATTERN + "?" + " ends_with_ic " + RHS_PATTERN + "$")
     public void assertEndsWithIgnoreCase(String lhs, String listMatch, String listKey, String rhs) {
         check(lhs, ListMatch.of(listMatch), listKey, Operator.ENDS_WITH_IC, rhs);
     }
 
-    @Then("^" + LHS_PATTERN + "\\s?" + LIST_MATCH_PATTERN + "?\\s?" + LHS_PATTERN + "?" + " is empty$")
+    @Then("^" + LHS_PATTERN + "\\s?" + ListMatch.PATTERN + "?\\s?" + LHS_PATTERN + "?" + " is empty$")
     public void assertEmpty(String lhs, String listMatch, String listKey) {
         check(lhs, ListMatch.of(listMatch), listKey, Operator.IS_EMPTY, null);
     }
 
-    @Then("^" + LHS_PATTERN + "\\s?" + LIST_MATCH_PATTERN + "?\\s?" + LHS_PATTERN + "?" + " is not empty$")
+    @Then("^" + LHS_PATTERN + "\\s?" + ListMatch.PATTERN + "?\\s?" + LHS_PATTERN + "?" + " is not empty$")
     public void assertNotEmpty(String lhs, String listMatch, String listKey) {
         check(lhs, ListMatch.of(listMatch), listKey, Operator.IS_NOT_EMPTY, null);
     }
 
-    @Then("^" + LHS_PATTERN + "\\s?" + LIST_MATCH_PATTERN + "?\\s?" + LHS_PATTERN + "?" + " is null")
+    @Then("^" + LHS_PATTERN + "\\s?" + ListMatch.PATTERN + "?\\s?" + LHS_PATTERN + "?" + " is null")
     public void assertNull(String lhs, String listMatch, String listKey) {
         check(lhs, ListMatch.of(listMatch), listKey, Operator.IS_NULL, null);
     }
 
-    @Then("^" + LHS_PATTERN + "\\s?" + LIST_MATCH_PATTERN + "?\\s?" + LHS_PATTERN + "?" + " is not null")
+    @Then("^" + LHS_PATTERN + "\\s?" + ListMatch.PATTERN + "?\\s?" + LHS_PATTERN + "?" + " is not null")
     public void assertNotNull(String lhs, String listMatch, String listKey) {
         check(lhs, ListMatch.of(listMatch), listKey, Operator.IS_NOT_NULL, null);
     }
 
-    @Then("^" + LHS_PATTERN + "\\s?" + LIST_MATCH_PATTERN + "?\\s?" + LHS_PATTERN + "?" + " exists$")
+    @Then("^" + LHS_PATTERN + "\\s?" + ListMatch.PATTERN + "?\\s?" + LHS_PATTERN + "?" + " exists$")
     public void assertExists(String lhs, String listMatch, String listKey) {
         check(lhs, ListMatch.of(listMatch), listKey, Operator.EXISTS, null);
     }
 
-    @Then("^" + LHS_PATTERN + "\\s?" + LIST_MATCH_PATTERN + "?\\s?" + LHS_PATTERN + "?" + " does not exist$")
+    @Then("^" + LHS_PATTERN + "\\s?" + ListMatch.PATTERN + "?\\s?" + LHS_PATTERN + "?" + " does not exist$")
     public void assertDoesNotExist(String lhs, String listMatch, String listKey) {
         check(lhs, ListMatch.of(listMatch), listKey, Operator.NOT_EXISTS, null);
     }

@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 public class ContextHelperStepDefs {
     private final HelpersManager helpersManager;
     private final ContextHelper  contextHelper;
-    private final RestHelper restHelper;
+    private final RestHelper     restHelper;
 
     @Given("^(\\w[\\w\\d]*) <- (.*)$")
     public void setVariable(String key, String value) {
