@@ -17,9 +17,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.support.Repositories;
 
 import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,8 +28,9 @@ public class DatabaseHelperStepDefs {
     private final ListableBeanFactory beanFactory;
     private final ObjectMapper        mapper;
 
-    @Given("^records for (\\w[\\w\\d]*):$")
-    public void recordsForTable(String entityName, List<Map<String, String>> records) throws IllegalAccessException {
+    @Given("^insert records for (\\w[\\w\\d]*):$")
+    public void insertRecordsForTable(String entityName, List<Map<String, String>> records)
+            throws IllegalAccessException {
         Class<?>      entityClass = findEntityClass(entityName);
         JpaRepository repo        = getRepository(entityClass);
 
@@ -39,9 +38,72 @@ public class DatabaseHelperStepDefs {
         entityList = repo.saveAll(entityList);
         for (int i = 0; i < entityList.size(); i++) {
             Object entity  = entityList.get(i);
-            Field  idField = FieldUtils.getFieldsWithAnnotation(entity.getClass(), Id.class)[0];
+            Field  idField = FieldUtils.getFieldsWithAnnotation(entityClass, Id.class)[0];
             idField.setAccessible(true);
             Object id = idField.get(entity);
+            contextHelper.getVariables().put("id" + i + 1, String.valueOf(id));
+        }
+    }
+
+    @Given("^upsert records for (\\w[\\w\\d]*):$")
+    public void upsertRecordsForTable(String entityName, List<Map<String, String>> records)
+            throws IllegalAccessException {
+        Class<?>      entityClass = findEntityClass(entityName);
+        JpaRepository repo        = getRepository(entityClass);
+
+        List<Map<String, Object>> processedRecords = helpersManager.processBody(records);
+        List<?>                   entityList       = helpersManager.parseBody(records, entityClass);
+        for (int i = 0; i < entityList.size(); i++) {
+            Object entity  = entityList.get(i);
+            Field  idField = FieldUtils.getFieldsWithAnnotation(entityClass, Id.class)[0];
+            idField.setAccessible(true);
+            Object   id                 = idField.get(entity);
+            Optional optReferenceEntity = repo.findById(id);
+            if (optReferenceEntity.isEmpty()) {
+                repo.save(entity);
+            } else {
+                Object referenceEntity = optReferenceEntity.get();
+                processedRecords.get(i).forEach((k, v) -> {
+                    Field field = FieldUtils.getField(entityClass, k, true);
+                    if (Objects.equals(field.getName(), idField.getName()))
+                        return;
+                    try {
+                        field.set(referenceEntity, mapper.convertValue(v, field.getType()));
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+                repo.save(referenceEntity);
+            }
+            contextHelper.getVariables().put("id" + i + 1, String.valueOf(id));
+        }
+    }
+
+    @Given("^update records for (\\w[\\w\\d]*):$")
+    public void updateRecordsForTable(String entityName, List<Map<String, String>> records)
+            throws IllegalAccessException {
+        Class<?>      entityClass = findEntityClass(entityName);
+        JpaRepository repo        = getRepository(entityClass);
+
+        List<Map<String, Object>> processedRecords = helpersManager.processBody(records);
+        List<?>                   entityList       = helpersManager.parseBody(records, entityClass);
+        for (int i = 0; i < entityList.size(); i++) {
+            Object entity  = entityList.get(i);
+            Field  idField = FieldUtils.getFieldsWithAnnotation(entityClass, Id.class)[0];
+            idField.setAccessible(true);
+            Object id              = idField.get(entity);
+            Object referenceEntity = repo.getReferenceById(id);
+            processedRecords.get(i).forEach((k, v) -> {
+                Field field = FieldUtils.getField(entityClass, k, true);
+                if (Objects.equals(field.getName(), idField.getName()))
+                    return;
+                try {
+                    field.set(referenceEntity, mapper.convertValue(v, field.getType()));
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            repo.save(referenceEntity);
             contextHelper.getVariables().put("id" + i + 1, String.valueOf(id));
         }
     }
