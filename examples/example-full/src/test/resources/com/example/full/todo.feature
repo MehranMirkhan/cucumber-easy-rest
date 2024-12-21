@@ -5,7 +5,7 @@ Feature: Todo
     Given find Role:
       | name      |
       | ROLE_USER |
-    Given records for User:
+    Given insert records for User:
       | username    | password | roles           |
       | &(username) | 123456   | [{"id": &(id)}] |
     Given user &(username) with role ROLE_USER
@@ -52,6 +52,24 @@ Feature: Todo
     Then status is 200
     When GET /todo/&(todoId)
     Then status is 404
+
+  Scenario: Upsert record
+    When POST /todo:
+      | text        | done |
+      | Buy grocery | true |
+    Then status is 201
+    Given todoId <- $.id
+    When GET /todo/&(todoId)
+    Then status is 200
+    And $.text = Buy grocery
+    And $.done = true
+    Given upsert records for Todo:
+      | id        | text        | done  |
+      | &(todoId) | Do homework | false |
+    When GET /todo/&(todoId)
+    Then status is 200
+    And $.text = Do homework
+    And $.done = false
 
   Scenario: Delete record
     When POST /todo:

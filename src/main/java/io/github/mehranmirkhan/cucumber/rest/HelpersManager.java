@@ -35,7 +35,7 @@ public class HelpersManager {
         else return TextNode.valueOf(s);
     }
 
-    public <T> List<T> parseBody(List<Map<String, String>> body, Class<T> _class) {
+    public List<Map<String, Object>> processBody(List<Map<String, String>> body) {
         return body.stream()
                    .map(entry -> {
                        Map<String, String> updatedEntry = new HashMap<>();
@@ -58,7 +58,13 @@ public class HelpersManager {
                            }
                            updatedNestedEntry.put(k2, v2);
                        });
-                       return mapper.convertValue(updatedNestedEntry, _class);
+                       return updatedNestedEntry;
                    }).toList();
+    }
+
+    public <T> List<T> parseBody(List<Map<String, String>> body, Class<T> _class) {
+        return processBody(body).stream()
+                                .map(entry -> mapper.convertValue(entry, _class))
+                                .toList();
     }
 }
