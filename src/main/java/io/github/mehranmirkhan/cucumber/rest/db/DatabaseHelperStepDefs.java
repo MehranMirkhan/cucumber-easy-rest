@@ -45,6 +45,20 @@ public class DatabaseHelperStepDefs {
         }
     }
 
+    @Given("^insert records for (\\w[\\w\\d]*) \\(ignore errors\\):$")
+    public void insertRecordsForTableIgnoreErrors(String entityName, List<Map<String, String>> records)
+            throws IllegalAccessException {
+        Class<?>      entityClass = findEntityClass(entityName);
+        JpaRepository repo        = getRepository(entityClass);
+
+        List<?> entityList = helpersManager.parseBody(records, entityClass);
+        for (Object entity : entityList) {
+            try {
+                repo.save(entity);
+            } catch (Exception ignored) {}
+        }
+    }
+
     @Given("^upsert records for (\\w[\\w\\d]*):$")
     public void upsertRecordsForTable(String entityName, List<Map<String, String>> records)
             throws IllegalAccessException {
