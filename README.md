@@ -121,6 +121,9 @@ Feature: Users CRUD
 Please see [examples](https://github.com/MehranMirkhan/cucumber-easy-rest/tree/main/examples)
 For more details on how to write feature files and use the predefined steps.
 
+> NOTE: The syntax is still not mature enough and may change in the future versions.
+> Please create an issue if you have any suggestions or feedback.
+
 ## Contributing
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create.
 Any contributions you make are **greatly appreciated**.
