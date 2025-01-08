@@ -63,7 +63,7 @@ Simply add the following dependency to your project.
 pom.xml:
 ```xml
 <dependency>
-    <groupId>com.github.mehranmirkhan</groupId>
+    <groupId>io.github.mehranmirkhan</groupId>
     <artifactId>cucumber-easy-rest</artifactId>
     <version>0.0.3</version>
     <scope>test</scope>
@@ -73,7 +73,7 @@ pom.xml:
 build.gradle:
 ```gradle
 dependencies {
-    testImplementation 'com.github.mehranmirkhan:cucumber-easy-rest:0.0.3'
+    testImplementation 'io.github.mehranmirkhan:cucumber-easy-rest:0.0.3'
 }
 ```
 
