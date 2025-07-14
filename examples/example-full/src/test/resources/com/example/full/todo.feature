@@ -84,3 +84,13 @@ Feature: Todo
       | &(todoId) |
     When GET /todo/&(todoId)
     Then status is 404
+
+  Scenario: Mock
+    Given mock todoService.getById(any):
+      | id   | text        | done  |
+      | 1000 | Mocked Todo | false |
+    Given user admin with role ROLE_ADMIN
+    When GET /admin/todo/1000
+    Then status is 200
+    And $.text = Mocked Todo
+    Given reset mocks
