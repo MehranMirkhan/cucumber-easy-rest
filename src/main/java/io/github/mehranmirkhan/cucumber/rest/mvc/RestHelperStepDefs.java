@@ -64,7 +64,7 @@ public class RestHelperStepDefs {
         if (StringUtils.isNotEmpty(headers)) {
             headerList = Arrays.stream(headers.split("-H"))
                                .map(String::trim)
-                               .filter(StringUtils::isNotEmpty)
+                               .filter(StringUtils::isNotBlank)
                                .map(helpersManager::processString)
                                .toList();
         }
@@ -72,7 +72,7 @@ public class RestHelperStepDefs {
         if (StringUtils.isNotEmpty(files)) {
             fileList = Arrays.stream(files.split("-F"))
                              .map(String::trim)
-                             .filter(StringUtils::isNotEmpty)
+                             .filter(StringUtils::isNotBlank)
                              .map(helpersManager::processString)
                              .toList();
         }

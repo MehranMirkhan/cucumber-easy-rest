@@ -84,3 +84,29 @@ Feature: Todo
       | &(todoId) |
     When GET /todo/&(todoId)
     Then status is 404
+
+  Scenario: Mock getById
+    Given mock todoService.getById(any):
+      | id   | text        | done  |
+      | 1000 | Mocked Todo | false |
+    Given user admin with role ROLE_ADMIN
+    When GET /admin/todo/1000
+    Then status is 200
+    And $.text = Mocked Todo
+
+  Scenario: Mock delete
+    Given mock todoService.delete(any)
+    Given user admin with role ROLE_ADMIN
+    When DELETE /admin/todo/1000
+    Then status is 200
+
+  Scenario: No Mock
+    When POST /todo:
+      | text        | done |
+      | Buy grocery | true |
+    Then status is 201
+    Given todoId <- $.id
+    Given user admin with role ROLE_ADMIN
+    When GET /admin/todo/&(todoId)
+    Then status is 200
+    And $.text = Buy grocery
