@@ -49,23 +49,21 @@
 - [License](#-license)
 
 ## About The Project
-The Cucumber is a tool that only provides a way to write tests in a human-readable format.
-It does not provide any specific semantic about the test steps. There is only pattern matching,
-and it is up to the test writer to implement the actual test logic.
+[Cucumber](https://cucumber.io/) is a tool that enables you to write tests in a human-readable format.
+However, it does not provide any built-in semantics for test steps—only pattern matching—leaving the implementation of test logic entirely up to the test writer.
 
-This project aims to solve this problem by providing a set of predefined steps that can be used
-to test REST endpoints. This way, the test writer can focus on writing the actual test scenarios
-and not worry about the implementation details.
+This project addresses that gap by offering a set of predefined steps specifically designed for testing REST endpoints.
+With these ready-to-use steps, you can focus on writing meaningful test scenarios without worrying about the underlying implementation details.
 
 ## Getting Started
-Simply add the following dependency to your project.
+To get started, simply add the following dependency to your project:
 
 pom.xml:
 ```xml
 <dependency>
     <groupId>io.github.mehranmirkhan</groupId>
     <artifactId>cucumber-easy-rest</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -73,11 +71,11 @@ pom.xml:
 build.gradle:
 ```gradle
 dependencies {
-    testImplementation 'io.github.mehranmirkhan:cucumber-easy-rest:0.0.3'
+    testImplementation 'io.github.mehranmirkhan:cucumber-easy-rest:0.0.4'
 }
 ```
 
-Once the dependency is added, Create a test class in your test directory like this:
+After adding the dependency, create a test class in your test directory as shown below:
 
 ```java
 @Suite
@@ -92,14 +90,13 @@ class CucumberEasyRestExampleFullApplicationTest {
 }
 ```
 
-> Note: The `@SelectClasspathResource` annotation is used to specify the package where the feature files are located.
-> Please replace it with the actual package name in your project.
-> The `@ConfigurationParameter` annotation is used to specify the glue and plugin properties for cucumber.
-> It specifies where the step definitions are located. You should first specify the package where the predefined
-> cucumber-easy-rest steps are, followed by the package of your custom steps.
+> Note: The `@SelectClasspathResource` annotation specifies the package containing your feature files.
+> Replace it with the appropriate package name for your project.
+> The `@ConfigurationParameter` annotation sets the glue and plugin properties for Cucumber.
+> The glue property should first include the package for the predefined cucumber-easy-rest steps, followed by your custom step definitions.
 
 ## Usage
-You can create feature files in the specified package and write your test scenarios.
+Create feature files in the specified package and write your test scenarios using the predefined steps.
 
 ```gherkin
 Feature: Users CRUD
@@ -112,17 +109,20 @@ Feature: Users CRUD
     Given user:
       | username | roles          |
       | admin    | ["ROLE_ADMIN"] |
+    Given mock userService.getById(any):
+      | id   | firstName |
+      | 1000 | Alex      |
     When PUT /users/&(userId):
-      | firstName |
-      | Jack      |
+      | firstName | age      |
+      | Jack      | &int(30) |
     Then status is 200
 ```
 
-Please see [examples](https://github.com/MehranMirkhan/cucumber-easy-rest/tree/main/examples)
-For more details on how to write feature files and use the predefined steps.
+See the [examples](https://github.com/MehranMirkhan/cucumber-easy-rest/tree/main/examples)
+for more details on writing feature files and using the predefined steps.
 
-> NOTE: The syntax is still not mature enough and may change in the future versions.
-> Please create an issue if you have any suggestions or feedback.
+> NOTE: The syntax is still evolving and may change in future versions.
+> Please open an issue if you have suggestions or feedback.
 
 ## Contributing
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create.
