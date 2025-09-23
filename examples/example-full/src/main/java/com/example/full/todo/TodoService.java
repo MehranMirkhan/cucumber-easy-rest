@@ -73,7 +73,8 @@ public class TodoService {
     }
 
     public Todo create(@NotEmpty String username, @NotNull TodoWriteDto dto) {
-        Todo todo = Todo.builder().text(dto.text).done(dto.done).owner(userService.getByUsername(username)).build();
+        Todo todo = Todo.builder().text(dto.text).done(dto.done).priority(dto.priority)
+                        .owner(userService.getByUsername(username)).build();
         return todoRepo.save(todo);
     }
 
@@ -107,5 +108,5 @@ public class TodoService {
 
     public record TodoFilter() {}
 
-    public record TodoWriteDto(String text, Boolean done) {}
+    public record TodoWriteDto(String text, Boolean done, Integer priority) {}
 }

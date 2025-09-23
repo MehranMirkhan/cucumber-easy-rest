@@ -1,12 +1,11 @@
 package io.github.mehranmirkhan.cucumber.rest.mvc;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.TextNode;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.github.mehranmirkhan.cucumber.rest.HelpersManager;
 import io.github.mehranmirkhan.cucumber.rest.core.ContextHelper;
+import io.github.mehranmirkhan.cucumber.rest.core.TypeProcessor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -39,6 +38,7 @@ public class RestHelperStepDefs {
 
     private final RestHelper    restHelper;
     private final ContextHelper contextHelper;
+    private final TypeProcessor  typeProcessor;
 
     @When("^(GET|POST|PUT|PATCH|DELETE) (\\S+)((?: -H [^=]+=[^=]+)*)((?: -F\\[.+] [^=]+=[^=]+)*)(?<!:)$")
     public void mvcRequestWithoutBody(String method, String path, String headers, String files) {
@@ -76,7 +76,7 @@ public class RestHelperStepDefs {
                              .map(helpersManager::processString)
                              .toList();
         }
-        Map<String, JsonNode> parsedBody = new HashMap<>();
+        Map<String, Object> parsedBody = new HashMap<>();
         if (body != null && !body.isEmpty()) {
             for (var entry : body.get(0).entrySet()) {
                 String k = entry.getKey();
@@ -84,7 +84,7 @@ public class RestHelperStepDefs {
                 v = helpersManager.processString(v);
                 if (v != null && (v.startsWith("{") || v.startsWith("[")))
                     parsedBody.put(k, mapper.readTree(v));
-                else parsedBody.put(k, TextNode.valueOf(v));
+                else parsedBody.put(k, typeProcessor.parseType(v));
             }
         }
         var req = fileList.isEmpty() ? switch (method) {
