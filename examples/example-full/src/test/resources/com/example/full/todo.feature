@@ -16,14 +16,15 @@ Feature: Todo
     And $.content is empty
     And $.content has_size 0
     When POST /todo:
-      | text  | done  |
-      | task1 | false |
+      | text  | done  | priority |
+      | task1 | false | &int(3)  |
     Then status is 201
     Given todoId <- $.id
     When GET /todo/&(todoId)
     Then status is 200
     And $.text = task1
     And $.done = false
+    And $.priority = 3
     When GET /todo
     Then status is 200
     And $.content is not empty

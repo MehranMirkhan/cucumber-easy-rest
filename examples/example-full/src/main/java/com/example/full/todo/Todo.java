@@ -18,6 +18,7 @@ import org.mapstruct.factory.Mappers;
 public class Todo extends BaseEntity {
     private String  text;
     private Boolean done;
+    private Integer priority;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
@@ -31,6 +32,7 @@ public class Todo extends BaseEntity {
         private Long    id;
         private String  text;
         private Boolean done;
+        private Integer priority;
         private String  owner;
 
         @org.mapstruct.Mapper
