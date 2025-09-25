@@ -19,7 +19,8 @@
         <java.version>21</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
-        <cucumber.version>7.18.0</cucumber.version>
+        <cucumber.version>7.29.0</cucumber.version>
+        <junit.version>5.13.4</junit.version>
     </properties>
 
     <licenses>
@@ -45,11 +46,33 @@
         </developer>
     </developers>
 
+    <dependencyManagement>
+        <dependencies>
+            <!-- Cucumber BOM -->
+            <dependency>
+                <groupId>io.cucumber</groupId>
+                <artifactId>cucumber-bom</artifactId>
+                <version>${cucumber.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- JUnit Jupiter BOM -->
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>io.github.mehranmirkhan</groupId>
             <artifactId>cucumber-easy-rest</artifactId>
-            <version>0.0.4</version>
+            <version>0.0.5-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
