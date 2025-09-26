@@ -1,8 +1,6 @@
 package io.github.mehranmirkhan.cucumber.rest.core;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.TextNode;
 import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
 import io.github.mehranmirkhan.cucumber.rest.HelpersManager;
@@ -33,6 +31,7 @@ import java.util.*;
 public class MockStepDefs {
     private final ApplicationContext ctx;
     private final ObjectMapper       mapper;
+    private final TypeProcessor      typeProcessor;
     private final HelpersManager     helpersManager;
 
     private final Map<String, Object> originalBeans = new HashMap<>();
@@ -68,8 +67,8 @@ public class MockStepDefs {
 
     @SneakyThrows
     @Given("^mock ([\\w\\d]*).([\\w\\d]*)\\(([^)]+)\\)$")
-    public void mockService(String serviceName, String methodName, String arguments) {
-        String   beanName = Introspector.decapitalize(serviceName);
+    public void mockService(String beanName, String methodName, String arguments) {
+        beanName = Introspector.decapitalize(beanName);
         Object   original = ctx.getBean(beanName);
         Class<?> svcClass = AopUtils.getTargetClass(original);
 
@@ -83,9 +82,9 @@ public class MockStepDefs {
 
     @SneakyThrows
     @Given("^mock ([\\w\\d]*).([\\w\\d]*)\\(([^)]+)\\):$")
-    public void mockService(String serviceName, String methodName, String arguments,
+    public void mockService(String beanName, String methodName, String arguments,
                             List<Map<String, String>> output) {
-        String   beanName = Introspector.decapitalize(serviceName);
+        beanName = Introspector.decapitalize(beanName);
         Object   original = ctx.getBean(beanName);
         Class<?> svcClass = AopUtils.getTargetClass(original);
 
@@ -160,12 +159,12 @@ public class MockStepDefs {
 
     @SneakyThrows
     protected Object buildReturnValue(Type returnType, List<Map<String, String>> output) {
-        List<Map<String, JsonNode>> parsedOutput = new ArrayList<>();
+        List<Map<String, Object>> parsedOutput = new ArrayList<>();
 
         if (output != null && !output.isEmpty()) {
             parsedOutput = new ArrayList<>(output.size());
             for (Map<String, String> entry : output) {
-                Map<String, JsonNode> parsedEntry = new HashMap<>();
+                Map<String, Object> parsedEntry = new HashMap<>();
                 for (var e : entry.entrySet()) {
                     String k = e.getKey();
                     String v = e.getValue();
@@ -173,7 +172,7 @@ public class MockStepDefs {
                     if (v != null && (v.startsWith("{") || v.startsWith("["))) {
                         parsedEntry.put(k, mapper.readTree(v));
                     } else {
-                        parsedEntry.put(k, TextNode.valueOf(v));
+                        parsedEntry.put(k, typeProcessor.parseType(v));
                     }
                 }
                 parsedOutput.add(parsedEntry);

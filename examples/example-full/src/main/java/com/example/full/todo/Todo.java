@@ -24,6 +24,13 @@ public class Todo extends BaseEntity {
     @JoinColumn(name = "owner_id")
     private User owner;
 
+    @PreUpdate
+    @PrePersist
+    private void prePersist() {
+        if (done == null) done = false;
+        if (priority == null) priority = 0;
+    }
+
     @Data
     @Builder
     @NoArgsConstructor

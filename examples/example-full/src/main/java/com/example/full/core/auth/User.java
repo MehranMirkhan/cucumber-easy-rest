@@ -21,10 +21,10 @@ import java.util.Set;
 @Table(name = "users")
 public class User extends BaseEntity {
     @Column(nullable = false, unique = true)
-    private           String username;
+    private String username;
     @JsonIgnore
     @Column(nullable = false)
-    private transient String password;
+    private String password;
 
     private Boolean disabled;
     private Boolean deleted;
@@ -35,6 +35,13 @@ public class User extends BaseEntity {
                joinColumns = @JoinColumn(name = "user_id"),
                inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+
+    @PreUpdate
+    @PrePersist
+    private void prePersist() {
+        if (disabled == null) disabled = false;
+        if (deleted == null) deleted = false;
+    }
 
     @Data
     @Builder

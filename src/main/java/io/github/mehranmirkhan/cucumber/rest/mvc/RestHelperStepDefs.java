@@ -38,7 +38,7 @@ public class RestHelperStepDefs {
 
     private final RestHelper    restHelper;
     private final ContextHelper contextHelper;
-    private final TypeProcessor  typeProcessor;
+    private final TypeProcessor typeProcessor;
 
     @When("^(GET|POST|PUT|PATCH|DELETE) (\\S+)((?: -H [^=]+=[^=]+)*)((?: -F\\[.+] [^=]+=[^=]+)*)(?<!:)$")
     public void mvcRequestWithoutBody(String method, String path, String headers, String files) {

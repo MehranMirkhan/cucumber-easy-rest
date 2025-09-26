@@ -19,13 +19,15 @@ public class RandHelper implements CucumberHelper {
     private static final Pattern RAND_NUMERIC_PATTERN       = Pattern.compile("&rand_n\\((\\d+)\\)");
     private static final Pattern RAND_ALPHA_NUMERIC_PATTERN = Pattern.compile("&rand_an\\((\\d+)\\)");
 
+    private final RandomStringUtils insecure = RandomStringUtils.insecure();
+
     @Override
     public String processString(String s) {
         s = RAND_FLOAT_PATTERN.matcher(s).replaceAll(r -> String.valueOf(random.nextFloat()));
         s = RAND_INT_PATTERN.matcher(s).replaceAll(r -> String.valueOf(random.nextInt(Integer.parseInt(r.group(1)))));
-        s = RAND_ALPHA_PATTERN.matcher(s).replaceAll(r -> RandomStringUtils.randomAlphabetic(Integer.parseInt(r.group(1))));
-        s = RAND_NUMERIC_PATTERN.matcher(s).replaceAll(r -> RandomStringUtils.randomNumeric(Integer.parseInt(r.group(1))));
-        s = RAND_ALPHA_NUMERIC_PATTERN.matcher(s).replaceAll(r -> RandomStringUtils.randomAlphanumeric(Integer.parseInt(r.group(1))));
+        s = RAND_ALPHA_PATTERN.matcher(s).replaceAll(r -> insecure.nextAlphabetic(Integer.parseInt(r.group(1))));
+        s = RAND_NUMERIC_PATTERN.matcher(s).replaceAll(r -> insecure.nextNumeric(Integer.parseInt(r.group(1))));
+        s = RAND_ALPHA_NUMERIC_PATTERN.matcher(s).replaceAll(r -> insecure.nextAlphanumeric(Integer.parseInt(r.group(1))));
         return s;
     }
 }
