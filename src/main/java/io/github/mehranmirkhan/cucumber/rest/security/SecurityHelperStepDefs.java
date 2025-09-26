@@ -42,7 +42,7 @@ public class SecurityHelperStepDefs {
         setMockUser("admin", "ROLE_ADMIN");
     }
 
-    @Given("^Anonymous$")
+    @Given("^anonymous$")
     public void setupAnonymous() {
         contextHelper.setMockUser(null);
     }

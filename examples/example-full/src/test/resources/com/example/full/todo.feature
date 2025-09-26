@@ -2,12 +2,11 @@ Feature: Todo
 
   Background:
     Given username <- &rand_a(4)
-    Given find Role:
-      | name      |
-      | ROLE_USER |
-    Given insert records for User:
-      | username    | password | roles           |
-      | &(username) | 123456   | [{"id": &(id)}] |
+    Given admin
+    When POST /admin/user:
+      | username    | password | roles         |
+      | &(username) | 123456   | ["ROLE_USER"] |
+    Then status is 201
     Given user &(username) with role ROLE_USER
 
   Scenario: CRUD
