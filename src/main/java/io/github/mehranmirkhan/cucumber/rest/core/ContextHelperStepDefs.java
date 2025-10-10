@@ -17,4 +17,9 @@ public class ContextHelperStepDefs {
         Object valueObj = restHelper.processResponse(value);
         contextHelper.getVariables().put(key, valueObj.toString());
     }
+
+    @Given("^clear context")
+    public void clearContext() {
+        contextHelper.getVariables().clear();
+    }
 }

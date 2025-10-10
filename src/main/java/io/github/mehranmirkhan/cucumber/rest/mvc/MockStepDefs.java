@@ -1,9 +1,10 @@
-package io.github.mehranmirkhan.cucumber.rest.core;
+package io.github.mehranmirkhan.cucumber.rest.mvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
 import io.github.mehranmirkhan.cucumber.rest.HelpersManager;
+import io.github.mehranmirkhan.cucumber.rest.core.TypeProcessor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
