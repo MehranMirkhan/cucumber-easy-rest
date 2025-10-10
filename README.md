@@ -118,7 +118,7 @@ Feature: Users CRUD
     Then status is 200
 ```
 
-See the [examples](https://github.com/MehranMirkhan/cucumber-easy-rest/tree/main/examples)
+See the [Documentation](https://github.com/MehranMirkhan/cucumber-easy-rest/wiki/Documentation) and [examples](https://github.com/MehranMirkhan/cucumber-easy-rest/tree/main/examples)
 for more details on writing feature files and using the predefined steps.
 
 > NOTE: The syntax is still evolving and may change in future versions.
