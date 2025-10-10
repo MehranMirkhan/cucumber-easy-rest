@@ -72,7 +72,7 @@
         <dependency>
             <groupId>io.github.mehranmirkhan</groupId>
             <artifactId>cucumber-easy-rest</artifactId>
-            <version>0.0.5-SNAPSHOT</version>
+            <version>0.0.5</version>
             <scope>test</scope>
         </dependency>
 
