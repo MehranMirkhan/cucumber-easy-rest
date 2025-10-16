@@ -7,6 +7,7 @@ Feature: Todo
       | username    | password | roles         |
       | &(username) | 123456   | ["ROLE_USER"] |
     Then status is 201
+    Given userId <- $.id
     Given user &(username) with role ROLE_USER
 
   Scenario: CRUD
@@ -110,3 +111,14 @@ Feature: Todo
     When GET /admin/todo/&(todoId)
     Then status is 200
     And $.text = Buy grocery
+
+  Scenario: Directly change DB
+    Given insert records for Todo:
+      | text          | done  | priority | owner.id  |
+      | From Database | false | 5        | &(userId) |
+    When GET /todo
+    Then status is 200
+    * $.content has_size 1
+    * $.content[0].text = From Database
+    * $.content[0].priority = 5
+    * $.content[0].done = false

@@ -65,7 +65,7 @@ public class DatabaseHelperStepDefs {
         Class<?>      entityClass = findEntityClass(entityName);
         JpaRepository repo        = getRepository(entityClass);
 
-        List<Map<String, Object>> processedRecords = helpersManager.processBody(records);
+        List<Map<String, Object>> processedRecords = helpersManager.processTable(records);
         List<?>                   entityList       = helpersManager.parseBody(records, entityClass);
         for (int i = 0; i < entityList.size(); i++) {
             Object entity  = entityList.get(i);
@@ -99,7 +99,7 @@ public class DatabaseHelperStepDefs {
         Class<?>      entityClass = findEntityClass(entityName);
         JpaRepository repo        = getRepository(entityClass);
 
-        List<Map<String, Object>> processedRecords = helpersManager.processBody(records);
+        List<Map<String, Object>> processedRecords = helpersManager.processTable(records);
         List<?>                   entityList       = helpersManager.parseBody(records, entityClass);
         for (int i = 0; i < entityList.size(); i++) {
             Object entity  = entityList.get(i);
