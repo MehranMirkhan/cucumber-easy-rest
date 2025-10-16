@@ -16,7 +16,7 @@ pom.xml:
 <dependency>
     <groupId>io.github.mehranmirkhan</groupId>
     <artifactId>cucumber-easy-rest</artifactId>
-    <version>0.0.5</version>
+    <version>0.0.6</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -24,7 +24,7 @@ pom.xml:
 build.gradle:
 ```gradle
 dependencies {
-    testImplementation 'io.github.mehranmirkhan:cucumber-easy-rest:0.0.5'
+    testImplementation 'io.github.mehranmirkhan:cucumber-easy-rest:0.0.6'
 }
 ```
 
