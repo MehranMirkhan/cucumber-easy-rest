@@ -25,7 +25,7 @@ import java.util.*;
 
 /**
  * Mock step definitions for Cucumber tests.
- * The mocks are automatically reset after each scenario.
+ * The mocks are automatically reset after each scenario if any mocks were created.
  */
 @Getter
 @RequiredArgsConstructor
@@ -41,6 +41,11 @@ public class MockStepDefs {
     @After
     @Given("^reset mocks$")
     public void resetMocks() {
+        // Only reset if mocks were created
+        if (originalBeans.isEmpty() && mocks.isEmpty()) {
+            return;
+        }
+
         DefaultListableBeanFactory bf =
                 (DefaultListableBeanFactory) ((ConfigurableApplicationContext) ctx).getBeanFactory();
 
