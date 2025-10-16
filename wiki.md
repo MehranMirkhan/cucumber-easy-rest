@@ -45,13 +45,13 @@ class MyApplicationCucumberTests {
 
 > Note: The `@SelectClasspathResource` annotation specifies the package containing your feature files. Replace it with the appropriate package name for your project. The `@ConfigurationParameter` annotation sets the glue and plugin properties for Cucumber. The glue property should first include the package for the predefined cucumber-easy-rest steps, followed by your custom step definitions.
 
-> Note: This library doesn't prevent you from writing ordinary tests as Java classes. If you find shortcomings in this library such that it prevents you from expressing a test scenario, simply create a Junit class and write your test there as usual.
+> Note: This library doesn't prevent you from writing ordinary tests as Java classes. If you find shortcomings in this library that prevent you from expressing a test scenario, simply create a JUnit class and write your test there as usual.
 
 ## Usage
 
-This library is intended to be used in `.feature` files. These files have [Gherkin](https://gherkin.org) syntax and are picked up and understood by [Cucumber](https://cucumber.io/) library.
+This library is intended to be used in `.feature` files. These files use [Gherkin](https://gherkin.org) syntax and are picked up and understood by the [Cucumber](https://cucumber.io/) library.
 
-In the `test/resources` directory of your project, create directory hierarchy based on your project's package name (and based on the cucumber configuration specified in the previous section). Then add your feature files there. Feature files can be in nested directories as well; So you can organize them as you see fit.
+In the `test/resources` directory of your project, create a directory hierarchy based on your project's package name (and according to the cucumber configuration specified in the previous section). Then add your feature files there. Feature files can be in nested directories as well, so you can organize them as you see fit.
 
 This is an example directory structure for a project with package name `com.example`:
 
@@ -60,9 +60,9 @@ src
 ├── main
 └── test
     ├── java
-    │   └── com
-    │       └── example
-    │           └── MyApplicationCucumberTests.java
+    │   └── com
+    │       └── example
+    │           └── MyApplicationCucumberTests.java
     └── resources
         └── com
             └── example
@@ -80,27 +80,27 @@ Feature: User Signup
 ```
 
 ### General Syntax
-These are basic step definitions that are not specific to any Spring related library.
+These are basic step definitions that are not specific to any Spring-related library.
 
 #### Context
-`cucumber-easy-rest` library maintains an internal memory of some variables (defined by the user) during test execution. These variables are essential in being able to write correct tests.
+The `cucumber-easy-rest` library maintains an internal memory of variables (defined by the user) during test execution. These variables are essential for writing correct tests.
 
 You can define a variable like this:
 ```gherkin
 Given a <- 2  # Variable 'a' is created with value 2
 ```
-With this step, a variable will be created in the internal memory and its value will be set to 2. To update this variable you write the same syntax again:
+With this step, a variable will be created in the internal memory and its value will be set to 2. To update this variable, use the same syntax again:
 ```gherkin
 Given a <- 3  # Variable 'a' is updated to 3
 ```
 
-These variables can be used through out the tests with `&(...)` syntax. For example:
+These variables can be used throughout the tests with the `&(...)` syntax. For example:
 ```gherkin
 Given b <- &(a)  # Create variable 'b' and set it to the value of variable 'a'
 ```
 This statement will create a new variable `b` and set its value to the value of variable `a`.
 
->Note that if you just write `Given b <- a`, it will create variable b but sets its value to the String `"a"`.
+> Note: If you write `Given b <- a`, it will create variable b but set its value to the string `"a"`.
 
 To clear the memory, simply write:
 ```gherkin
@@ -108,7 +108,7 @@ Given clear context
 ```
 
 #### Assertions
-The assertions syntax will help us to validate the test results. There are many operations provided for assertions in this library. Look at the following scenario to see how it can be used:
+The assertion syntax helps validate test results. There are many operations provided for assertions in this library. See the following scenario for usage:
 ```gherkin
 Scenario: Assertions Examples
   Given a <- 3
@@ -134,22 +134,22 @@ Scenario: Assertions Examples
   And $.roles is not empty
 ```
 
-> Note: Cucumber doesn't prevent you from using `Given/Then/And/When` keywords interchangebly. So you can write `And a <- 3` or `Given b > 3`, but it is better to write the proper keyword to make the tests more human readble.
+> Note: Cucumber doesn't prevent you from using `Given/Then/And/When` keywords interchangeably. So you can write `And a <- 3` or `Given b > 3`, but it is better to use the proper keyword to make the tests more human-readable.
 
 #### Type Processing
-An important thing to understand from the previous sections, is that all the variables that we created were strings. When we write `Given a <- 3`, we are creating variable `a` with value `"3"`. Everthing initially is interpreted as string. However, we can explicitly define the type of a value with 3 type functions: `bool`, `int`, `double`. Here is an example:
+An important thing to understand from the previous sections is that all the variables created are strings. When you write `Given a <- 3`, you are creating variable `a` with value `"3"`. Everything is initially interpreted as a string. However, you can explicitly define the type of a value with three type functions: `bool`, `int`, and `double`. Here is an example:
 ```gherkin
 Scenario: Use type
   And 3 = &int(3)
   And 3.0 = &double(3)
 ```
-This looks pointless but it will become crucial once we start using REST or DB steps.
-> Note: You can only store strings inside the context variables. Even if you write `Given a <- &int(3)`, it will stil be stored as a string. That is because variables are substituted using regex pattern matching.
+This looks pointless but becomes crucial once you start using REST or DB steps.
+> Note: You can only store strings inside context variables. Even if you write `Given a <- &int(3)`, it will still be stored as a string. This is because variables are substituted using regex pattern matching.
 
-Another important point is that the equality that is being performed here is soft equality; Meaning, the left-hand-side (LHS) and the right-hand-side (RHS) of the equality are compared without considering their type. There is strict equality as well which is specified with `==` and it asserts equality if the type matches as well. The strict equality, only considers the RHS type. For LHS, the library attempts to automatically discover the type. Therefore, `3 == &int(3)` is correct while `&int(3) == 3` is incorrect. This is because the LHS is supposed to be a variable or a JSON-path (as we will see in REST helpers), and the RHS is supposed to represent the expected value. Hence, this difference will make more sense for test implementations.
+Another important point is that the equality performed here is soft equality; meaning, the left-hand side (LHS) and the right-hand side (RHS) of the equality are compared without considering their type. There is strict equality as well, specified with `==`, which asserts equality if the type matches as well. Strict equality only considers the RHS type. For LHS, the library attempts to automatically discover the type. Therefore, `3 == &int(3)` is correct while `&int(3) == 3` is incorrect. This is because the LHS is supposed to be a variable or a JSON-path (as we will see in REST helpers), and the RHS is supposed to represent the expected value. This difference will make more sense for test implementations.
 
 #### Math
-Currently 4 math operations are provided: `add` (for addition), `sub` (for subtraction), `mul` (for multiplication) and `div` (for division).
+Currently, four math operations are provided: `add` (addition), `sub` (subtraction), `mul` (multiplication), and `div` (division).
 ```gherkin
 Scenario: Math
   Given a <- &add(1,2)  # Variable 'a' will be set to integer 3
@@ -159,7 +159,7 @@ Scenario: Math
 ```
 
 #### String Helpers
-Currently 2 functions are provided for manipulating strings: `lower` and `upper` (to convert to lowercase and uppercase respectively).
+Currently, two functions are provided for manipulating strings: `lower` and `upper` (to convert to lowercase and uppercase respectively).
 ```gherkin
 Scenario: String Helpers
   Given str1 <- MeHrAn
@@ -169,25 +169,25 @@ Scenario: String Helpers
 ```
 
 #### Random Helpers
-The following function are defined to allow the user to generate random numbers and strings:
+The following functions are defined to allow the user to generate random numbers and strings:
 ```gherkin
 Scenario: Random Helpers
   Given a <- &rand()    # A random double between 0 and 1
   And b <- &rand(10)    # A random integer between 0 (inclusive) and 10 (exclusive)
-  And c <- &rand_a(4)   # A 4 letter random alphabetic string (e.g. aFGb)
-  And d <- &rand_n(4)   # A 4 digit random numeric string (e.g. 0374)
-  And e <- &rand_an(4)  # A 4 character random alphanumeric string (e.g. F5j0)
+  And c <- &rand_a(4)   # A 4-letter random alphabetic string (e.g. aFGb)
+  And d <- &rand_n(4)   # A 4-digit random numeric string (e.g. 0374)
+  And e <- &rand_an(4)  # A 4-character random alphanumeric string (e.g. F5j0)
 ```
 
 ### DB Helpers
-This library provides database manipulation helpers. It is possible to perform full CRUD operations with the database. Let's imagine we have an entity called `Person` with `name` and `age` columns and there is a unique constraint on the `name` column.
+This library provides database manipulation helpers. It is possible to perform full CRUD operations with the database. Let's imagine we have an entity called `Person` with `name` and `age` columns and a unique constraint on the `name` column.
 ```gherkin
 Scenario: DB Helpers
   Given insert records for Person:
     | name | age |
     | Alex | 12  |
     | Lucy | 18  |
-  # 2 records will be created in the person table. The IDs of the records will be put into context variables with `id*` name.
+  # 2 records will be created in the person table. The IDs of the records will be put into context variables with `id*` names.
   Then alexId <- &(id1)
   And lucyId <- &(id2)
   Given insert records for Person (ignore errors):
@@ -197,9 +197,9 @@ Scenario: DB Helpers
   Given upsert records for Person:
     | id        | name | age |
     | &(alexId) | Alex | 15  |
-  # Updates the existing record, or create a new record if it doesn't exist.
+  # Updates the existing record, or creates a new record if it doesn't exist.
   Given update records for Person:
-    | id.       | name | age |
+    | id        | name | age |
     | &(alexId) | Alex | 15  |
   # Updates the Alex record
   Given delete records for Person:
@@ -213,9 +213,9 @@ Scenario: DB Helpers
     | lEx  |
   # Finds the Alex record and puts its ID into a variable named `id`.
 ```
-> Note that the `find` helper must be specified in a way that only matches one record in the database. Otherwise an exception will be thrown.
+> Note: The `find` helper must be specified in a way that matches only one record in the database. Otherwise, an exception will be thrown.
 
-> As a general convention, when a step definition ends with `:`, it means it expects a table body. This is not a Cucumber/Gherkin restriction. It's only a convention in `cucumber-easy-rest` library.
+> As a general convention, when a step definition ends with `:`, it means it expects a table body. This is not a Cucumber/Gherkin restriction, but a convention in the `cucumber-easy-rest` library.
 
 ### REST Helpers
 If your project has the `spring-web` dependency, you can easily call endpoints in the application using REST step definitions. A few examples:
@@ -233,9 +233,9 @@ Scenario: REST Helpers
     | Lucy | 18  |
   Then status is 201
 ```
-The `$.content[0].name` expression is a JSON path and the library will try to replace it with the values in that path according to the response of the latest API call (In this case the latest call was `GET /users?name=Alex`).
+The `$.content[0].name` expression is a JSON path and the library will try to replace it with the values in that path according to the response of the latest API call (in this case, the latest call was `GET /users?name=Alex`).
 
-The JSON path can be used to perform list assertions like this following:
+The JSON path can be used to perform list assertions like the following:
 ```gherkin
 Scenario: List Assertions
   Given GET /users
@@ -244,7 +244,7 @@ Scenario: List Assertions
   And $.content has no match age > 15
   And $.content all match id is not null
 ```
-In these cases, the assertion uses `MockMvcResultMatchers.jsonPath`. This means you can write assertions like this: `And $.content[?(@.id==1)] exists` (Meaning there is an item with id equal to 1) or `And $.content[?(@.id>50)] does not exist` (Meaning there is no item with id greater than 50).
+In these cases, the assertion uses `MockMvcResultMatchers.jsonPath`. This means you can write assertions like: `And $.content[?(@.id==1)] exists` (meaning there is an item with id equal to 1) or `And $.content[?(@.id>50)] does not exist` (meaning there is no item with id greater than 50).
 
 The call can also have a request body, which is specified by a datatable after the call expression.
 
@@ -256,14 +256,14 @@ It is also possible to validate the status code of the response with an expressi
   Then status is 404
   And $.message = User not found
 ```
-> It is a good practice to put the status check expression after each API call. This will help you to better identify potential issues in your tests because non-200 status codes don't interrupt the test execution and therefore the test might keep going and only fail in later steps.
+> It is good practice to put the status check expression after each API call. This will help you better identify potential issues in your tests because non-200 status codes don't interrupt the test execution and therefore the test might keep going and only fail in later steps.
 
 You can add request headers by providing `-H key=value`:
 ```gherkin
 When GET /users/&(userId) -H Authorization=Bearer 2348mcnhfu94
 ```
 
-To provide files in the request, simply use `-F[file] data.txt=Hello, World!`. You can provide multiple headers or files. Note the providing even a single `-F` will set the request type to `multipart/form`. The content of the file can be specified in Hex byte format with `0x` prefix: `-F[file1] data.csv=0x1ac3b...`.
+To provide files in the request, simply use `-F[file] data.txt=Hello, World!`. You can provide multiple headers or files. Note that providing even a single `-F` will set the request type to `multipart/form`. The content of the file can be specified in hex byte format with the `0x` prefix: `-F[file1] data.csv=0x1ac3b...`.
 
 The request body accepts JSON objects as well:
 ```gherkin
@@ -282,15 +282,15 @@ This will result in a request body like the following:
 ```
 
 ### Mocking Spring Beans
-This library provides a powerful tool for mocking Spring beans on the fly. To define a mock you can write:
+This library provides a powerful tool for mocking Spring beans on the fly. To define a mock, you can write:
 ```gherkin
 Scenario: Mock Helper
   Given mock userService.getById(any):
     | id   | name |
     | 1000 | Alex |
 ```
-Now whenever the `getById` method of the `UserService` bean is invoked, it will return the specified object. If a service doesn't have a return type, You can simply write `Given mock userService.getById(any)` with a final `:`. You can reset mocks by writing `Given reset mocks`.
-> Note: At the end of each test scenario, all the mocks are cleared automatically. If you want a mock to be maintained in all scenarios of a feature file, simply put the mock in the `Background` section of your feature file:
+Now, whenever the `getById` method of the `UserService` bean is invoked, it will return the specified object. If a service doesn't have a return type, you can simply write `Given mock userService.getById(any)` without a table. You can reset mocks by writing `Given reset mocks`.
+> Note: At the end of each test scenario, all mocks are cleared automatically. If you want a mock to be maintained in all scenarios of a feature file, simply put the mock in the `Background` section of your feature file:
 ```gherkin
 Feature: Test Users
   Background: Setup mocks
@@ -306,10 +306,10 @@ Feature: Test Users
     Then status is 200
     And $.name = Alex
 ```
-> `Background` section of a feature file is automatically executed before each test scenario.
+> The `Background` section of a feature file is automatically executed before each test scenario.
 
 ### Security Helpers
-If your project has the `spring-security` dependency, you can mock authentication user in your API calls using the following steps:
+If your project has the `spring-security` dependency, you can mock the authenticated user in your API calls using the following steps:
 ```gherkin
 Given user:
   | username | roles          |
@@ -321,10 +321,10 @@ Given admin
 # To clear the authentication:
 Given anonymous
 ```
-Now calling the endpoints will be performed with a user with admin role. Note that for this to work, you must define a class implementing the `UserDetailsProvider` interface. This tells the library which Java class should be used to create the user object.
+Now, calling the endpoints will be performed with a user with the admin role. Note that for this to work, you must define a class implementing the `UserDetailsProvider` interface. This tells the library which Java class should be used to create the user object.
 
 ## Extension
-The helper steps that are defined in this library are comprehensive, yet you might still need something that is not defined here. In such cases, you can simple define your own steps in your test directory. Simply create a `ExampleStepDef.java` class in `test/java/...` directory with a content like this:
+The helper steps defined in this library are comprehensive, yet you might still need something that is not defined here. In such cases, you can simply define your own steps in your test directory. Create an `ExampleStepDef.java` class in the `test/java/...` directory with content like this:
 ```java
 package com.example.demo;
 
