@@ -42,7 +42,7 @@ public class RestHelperStepDefs {
 
     @When("^(GET|POST|PUT|PATCH|DELETE) (\\S+)((?: -H [^=]+=[^=]+)*)((?: -F\\[.+] [^=]+=[^=]+)*)(?<!:)$")
     public void mvcRequestWithoutBody(String method, String path, String headers, String files) {
-        mvcRequest(method, path, headers, files, List.of());
+        mvcRequest(method, path, headers, files, null);
     }
 
     @When("^(GET|POST|PUT|PATCH|DELETE) (\\S+)((?: -H [^=]+=[^=]+)*)((?: -F\\[.+] [^=]+=[^=]+)*):$")
@@ -58,7 +58,8 @@ public class RestHelperStepDefs {
     }
 
     @SneakyThrows
-    private void mvcRequest(String method, String path, String headers, String files, List<Map<String, String>> body) {
+    private void mvcRequest(String method, String path, String headers, String files,
+                            List<Map<String, String>> body) {
         path = helpersManager.processString(path);
         List<String> headerList = new ArrayList<>();
         if (StringUtils.isNotEmpty(headers)) {
@@ -76,17 +77,9 @@ public class RestHelperStepDefs {
                              .map(helpersManager::processString)
                              .toList();
         }
-        Map<String, Object> parsedBody = new HashMap<>();
-        if (body != null && !body.isEmpty()) {
-            for (var entry : body.get(0).entrySet()) {
-                String k = entry.getKey();
-                String v = entry.getValue();
-                v = helpersManager.processString(v);
-                if (v != null && (v.startsWith("{") || v.startsWith("[")))
-                    parsedBody.put(k, mapper.readTree(v));
-                else parsedBody.put(k, typeProcessor.parseType(v));
-            }
-        }
+        List<Map<String, Object>> parsedBody = helpersManager.processTable(body);
+        var requestBody = parsedBody == null ? null :
+                          (parsedBody.size() == 1 ? parsedBody.getFirst() : parsedBody);
         var req = fileList.isEmpty() ? switch (method) {
             case "GET" -> MockMvcRequestBuilders.get(path);
             case "POST" -> MockMvcRequestBuilders.post(path);
@@ -118,8 +111,8 @@ public class RestHelperStepDefs {
                     field, fileName, MediaType.MULTIPART_FORM_DATA_VALUE, bytes);
             ((MockMultipartHttpServletRequestBuilder) req).file(file);
         });
-        if (!parsedBody.isEmpty())
-            req.content(mapper.writeValueAsString(parsedBody));
+        if (parsedBody != null && !parsedBody.isEmpty())
+            req.content(mapper.writeValueAsString(requestBody));
         if (fileList.isEmpty())
             req.contentType(MediaType.APPLICATION_JSON);
         req.accept(MediaType.APPLICATION_JSON);

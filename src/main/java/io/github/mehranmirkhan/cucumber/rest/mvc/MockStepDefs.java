@@ -165,25 +165,7 @@ public class MockStepDefs {
 
     @SneakyThrows
     protected Object buildReturnValue(Type returnType, List<Map<String, String>> output) {
-        List<Map<String, Object>> parsedOutput = new ArrayList<>();
-
-        if (output != null && !output.isEmpty()) {
-            parsedOutput = new ArrayList<>(output.size());
-            for (Map<String, String> entry : output) {
-                Map<String, Object> parsedEntry = new HashMap<>();
-                for (var e : entry.entrySet()) {
-                    String k = e.getKey();
-                    String v = e.getValue();
-                    v = helpersManager.processString(v);
-                    if (v != null && (v.startsWith("{") || v.startsWith("["))) {
-                        parsedEntry.put(k, mapper.readTree(v));
-                    } else {
-                        parsedEntry.put(k, typeProcessor.parseType(v));
-                    }
-                }
-                parsedOutput.add(parsedEntry);
-            }
-        }
+        List<Map<String, Object>> parsedOutput = helpersManager.processTable(output);
         switch (returnType) {
             case ParameterizedType paraRetType when paraRetType.getRawType() == List.class -> {
                 Class<?> itemCls = (Class<?>) paraRetType.getActualTypeArguments()[0];

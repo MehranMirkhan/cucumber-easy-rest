@@ -1,70 +1,78 @@
 package io.github.mehranmirkhan.cucumber.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.TextNode;
+import io.github.mehranmirkhan.cucumber.rest.core.TypeProcessor;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public class HelpersManager {
     private final List<CucumberHelper> helpers;
     private final ObjectMapper         mapper;
+    private final TypeProcessor        typeProcessor;
 
     public String processString(String s) {
-        return Optional.ofNullable(helpers)
-                       .orElse(List.of())
-                       .stream()
-                       .reduce(s,
-                               (str, helper) -> StringUtils.isEmpty(str) ? str : helper.processString(str.trim()),
-                               (str1, str2) -> str2);
+        if (StringUtils.isBlank(s)) return s;
+        List<CucumberHelper> safeHelpers = helpers != null ? helpers : Collections.emptyList();
+
+        String result = s;
+        for (CucumberHelper helper : safeHelpers) {
+            if (StringUtils.isEmpty(result)) break;
+            result = helper.processString(result.trim());
+        }
+        return result;
     }
 
-    public JsonNode parseJson(String s) throws JsonProcessingException {
-        s = processString(s);
-        if (StringUtils.isNotEmpty(s) && (s.startsWith("{") || s.startsWith("[")))
-            return mapper.readTree(s);
-        else return TextNode.valueOf(s);
+    public Object parseJson(String s) throws JsonProcessingException {
+        String processed = processString(s);
+        if (StringUtils.isNotEmpty(processed) && (processed.startsWith("{") || processed.startsWith("["))) {
+            return mapper.readTree(processed);
+        }
+        return typeProcessor.parseType(processed);
     }
 
-    public List<Map<String, Object>> processBody(List<Map<String, String>> body) {
-        return body.stream()
-                   .map(entry -> {
-                       Map<String, String> updatedEntry = new HashMap<>();
-                       entry.forEach((k, v) -> updatedEntry.put(k, processString(v)));
-                       Map<String, Object> updatedNestedEntry = new HashMap<>();
-                       updatedEntry.forEach((k, v) -> {
-                           String k2 = k;
-                           Object v2 = v;
-                           if (v.startsWith("{") || v.startsWith("[")) {
-                               try {
-                                   v2 = mapper.readTree(v);
-                               } catch (JsonProcessingException e) {
-                                   throw new RuntimeException(e);
-                               }
-                           }
-                           if (k.contains(".")) {
-                               String[] keyParts = k2.split("\\.");
-                               k2 = keyParts[0];
-                               v2 = Map.of(keyParts[1], v2);
-                           }
-                           updatedNestedEntry.put(k2, v2);
-                       });
-                       return updatedNestedEntry;
-                   }).toList();
+    public Map<String, Object> processMap(Map<String, String> body) {
+        if (body == null || body.isEmpty())
+            return Collections.emptyMap();
+        Map<String, String> updatedEntry = new HashMap<>();
+        body.forEach((k, v) -> updatedEntry.put(k, processString(v)));
+        Map<String, Object> updatedNestedEntry = new HashMap<>();
+        updatedEntry.forEach((k, v) -> {
+            Object value;
+            try {
+                value = parseJson(v);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException("Failed to parse JSON for key: " + k, e);
+            }
+            String[]            keyParts = k.split("\\.");
+            Map<String, Object> current  = updatedNestedEntry;
+            for (int i = 0; i < keyParts.length - 1; i++) {
+                current = (Map<String, Object>) current.computeIfAbsent(keyParts[i], kk -> new HashMap<>());
+            }
+            current.put(keyParts[keyParts.length - 1], value);
+        });
+        return updatedNestedEntry;
+    }
+
+    public List<Map<String, Object>> processTable(List<Map<String, String>> body) {
+        if (body == null || body.isEmpty())
+            return Collections.emptyList();
+        return body.stream().map(this::processMap).toList();
     }
 
     public <T> List<T> parseBody(List<Map<String, String>> body, Class<T> _class) {
-        return processBody(body).stream()
-                                .map(entry -> mapper.convertValue(entry, _class))
-                                .toList();
+        if (body == null || body.isEmpty())
+            return Collections.emptyList();
+        return processTable(body).stream()
+                                 .map(entry -> mapper.convertValue(entry, _class))
+                                 .toList();
     }
 }
