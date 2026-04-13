@@ -1,11 +1,10 @@
 package io.github.mehranmirkhan.cucumber.rest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.mehranmirkhan.cucumber.rest.core.TypeProcessor;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,7 +30,7 @@ public class HelpersManager {
         return result;
     }
 
-    public Object parseJson(String s) throws JsonProcessingException {
+    public Object parseJson(String s) {
         String processed = processString(s);
         if (StringUtils.isNotEmpty(processed) && (processed.startsWith("{") || processed.startsWith("["))) {
             return mapper.readTree(processed);
@@ -47,13 +46,9 @@ public class HelpersManager {
         Map<String, Object> updatedNestedEntry = new HashMap<>();
         updatedEntry.forEach((k, v) -> {
             Object value;
-            try {
-                value = parseJson(v);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException("Failed to parse JSON for key: " + k, e);
-            }
-            String[]            keyParts = k.split("\\.");
-            Map<String, Object> current  = updatedNestedEntry;
+            value = parseJson(v);
+            String[] keyParts = k.split("\\.");
+            Map<String, Object> current = updatedNestedEntry;
             for (int i = 0; i < keyParts.length - 1; i++) {
                 current = (Map<String, Object>) current.computeIfAbsent(keyParts[i], kk -> new HashMap<>());
             }

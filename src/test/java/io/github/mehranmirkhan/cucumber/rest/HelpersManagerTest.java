@@ -1,20 +1,21 @@
 package io.github.mehranmirkhan.cucumber.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.mehranmirkhan.cucumber.rest.core.TypeProcessor;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import io.github.mehranmirkhan.cucumber.rest.core.TypeProcessor;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 class HelpersManagerTest {
-    private ObjectMapper   mapper;
-    private TypeProcessor  typeProcessor;
+    private ObjectMapper mapper;
+    private TypeProcessor typeProcessor;
     private CucumberHelper helper;
     private HelpersManager helpersManager;
 
@@ -44,7 +45,7 @@ class HelpersManagerTest {
         String json = "{\"a\":1}";
         when(helper.processString(json)).thenReturn(json);
         Object result = helpersManager.parseJson(json);
-        assertEquals(1, ((com.fasterxml.jackson.databind.JsonNode) result).get("a").asInt());
+        assertEquals(1, ((JsonNode) result).get("a").asInt());
     }
 
     @Test
@@ -52,8 +53,8 @@ class HelpersManagerTest {
         String json = "[1,2]";
         when(helper.processString(json)).thenReturn(json);
         Object result = helpersManager.parseJson(json);
-        assertTrue(result instanceof com.fasterxml.jackson.databind.JsonNode);
-        assertEquals(2, ((com.fasterxml.jackson.databind.JsonNode) result).size());
+        assertTrue(result instanceof JsonNode);
+        assertEquals(2, ((JsonNode) result).size());
     }
 
     @Test
@@ -108,7 +109,7 @@ class HelpersManagerTest {
         when(helper.processString("2")).thenReturn("2");
         when(typeProcessor.parseType("1")).thenReturn(1);
         when(typeProcessor.parseType("2")).thenReturn(2);
-        List<Map<String, String>> input  = List.of(m1, m2);
+        List<Map<String, String>> input = List.of(m1, m2);
         List<Map<String, Object>> result = helpersManager.processTable(input);
         assertEquals(2, result.size());
         assertEquals(1, result.get(0).get("a"));
@@ -126,9 +127,9 @@ class HelpersManagerTest {
         Map<String, String> m = Map.of("a", "5");
         when(helper.processString("5")).thenReturn("5");
         when(typeProcessor.parseType("5")).thenReturn(5);
-        HelpersManager            hm     = new HelpersManager(List.of(helper), mapper, typeProcessor);
-        List<Map<String, String>> input  = List.of(m);
-        List<Dummy>               result = hm.parseBody(input, Dummy.class);
+        HelpersManager hm = new HelpersManager(List.of(helper), mapper, typeProcessor);
+        List<Map<String, String>> input = List.of(m);
+        List<Dummy> result = hm.parseBody(input, Dummy.class);
         assertEquals(1, result.size());
         assertEquals(5, result.get(0).a);
     }

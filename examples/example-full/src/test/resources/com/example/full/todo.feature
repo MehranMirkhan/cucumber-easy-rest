@@ -122,3 +122,15 @@ Feature: Todo
     * $.content[0].text = From Database
     * $.content[0].priority = 5
     * $.content[0].done = false
+
+  Scenario: Query DB
+    Given insert records for Todo:
+      | text            | done | priority | owner.id  |
+      | Search Database | true | 5        | &(userId) |
+    When SQL:
+      | query                                         |
+      | SELECT * FROM todo WHERE owner_id = &(userId) |
+    Then $$ has_size 1
+    And $$[0].text = Search Database
+    And $$[0].priority = 5
+    And $$[0].done = true

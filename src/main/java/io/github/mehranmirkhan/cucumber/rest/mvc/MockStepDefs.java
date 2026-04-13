@@ -1,6 +1,5 @@
 package io.github.mehranmirkhan.cucumber.rest.mvc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
 import io.github.mehranmirkhan.cucumber.rest.HelpersManager;
@@ -15,6 +14,7 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.util.ReflectionTestUtils;
+import tools.jackson.databind.ObjectMapper;
 
 import java.beans.Introspector;
 import java.lang.reflect.Field;

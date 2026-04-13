@@ -1,6 +1,5 @@
 package io.github.mehranmirkhan.cucumber.rest.mvc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.github.mehranmirkhan.cucumber.rest.HelpersManager;
@@ -18,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.*;
 import java.util.regex.Matcher;

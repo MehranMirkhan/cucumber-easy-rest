@@ -1,23 +1,29 @@
 package io.github.mehranmirkhan.cucumber.rest.db;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.en.Given;
+import io.cucumber.java.en.When;
 import io.github.mehranmirkhan.cucumber.rest.HelpersManager;
 import io.github.mehranmirkhan.cucumber.rest.core.ContextHelper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Id;
+import jakarta.persistence.Query;
 import jakarta.persistence.metamodel.EntityType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.hibernate.query.NativeQuery;
+import org.hibernate.transform.AliasToEntityMapResultTransformer;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.support.Repositories;
+import tools.jackson.databind.ObjectMapper;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,6 +33,7 @@ public class DatabaseHelperStepDefs {
     private final EntityManager       entityManager;
     private final ListableBeanFactory beanFactory;
     private final ObjectMapper        mapper;
+    private final DatabaseHelper      databaseHelper;
 
     @Given("^insert records for (\\w[\\w\\d]*):$")
     public void insertRecordsForTable(String entityName, List<Map<String, String>> records)
@@ -151,10 +158,10 @@ public class DatabaseHelperStepDefs {
         repo.deleteAll(entities);
     }
 
-    @Given("^find (\\w[\\w\\d]*):$")
-    public void findEntityByField(String entityName, List<Map<String, String>> examples) {
-        Class<?>      entityClass = findEntityClass(entityName);
-        JpaRepository repo        = getRepository(entityClass);
+    @When("^find (\\w[\\w\\d]*):$")
+    public void findEntityByExample(String entityName, List<Map<String, String>> examples) {
+        Class<?> entityClass = findEntityClass(entityName);
+        JpaRepository repo = getRepository(entityClass);
         if (examples.size() > 1)
             throw new RuntimeException("Only one example is allowed for find operation");
         List<?> exampleList = helpersManager.parseBody(examples, entityClass);
@@ -179,6 +186,25 @@ public class DatabaseHelperStepDefs {
             }, () -> {
                 throw new RuntimeException("Entity not found: " + entityName + " - " + example);
             });
+    }
+
+    @When("^SQL:$")
+    public void executeSql(List<Map<String, String>> sqlBody) {
+        String sql = helpersManager.processTable(sqlBody)
+                                   .stream()
+                                   .map(entry -> entry.get("query"))
+                                   .map(String::valueOf)
+                                   .filter(StringUtils::isNotBlank)
+                                   .collect(Collectors.joining("\n"));
+        if (StringUtils.isBlank(sql)) {
+            throw new RuntimeException("SQL query is required in the body with key 'query'");
+        }
+        Query query = entityManager.createNativeQuery(sql);
+        query.unwrap(NativeQuery.class)
+             .setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE);
+
+        List<Map<String, Object>> results = query.getResultList();
+        databaseHelper.setQueryResults(DatabaseHelper.toCamelCase(results));
     }
 
     protected Class<?> findEntityClass(String entityName) {

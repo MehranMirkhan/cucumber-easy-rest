@@ -2,6 +2,7 @@ package io.github.mehranmirkhan.cucumber.rest.core;
 
 import io.cucumber.java.en.Then;
 import io.github.mehranmirkhan.cucumber.rest.HelpersManager;
+import io.github.mehranmirkhan.cucumber.rest.db.DatabaseHelper;
 import io.github.mehranmirkhan.cucumber.rest.mvc.RestHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -18,6 +19,7 @@ public class AssertionHelperStepDefs {
     private final HelpersManager helpersManager;
     private final TypeProcessor  typeProcessor;
     private final RestHelper     restHelper;
+    private final DatabaseHelper databaseHelper;
 
     public enum Operator {
         EQUAL, SOFT_EQUAL, NOT_EQUAL,
@@ -151,16 +153,20 @@ public class AssertionHelperStepDefs {
         Object rhsObj          = typeProcessor.parseType(rhs);
         Object lhsInferredType = typeProcessor.inferType(lhsObj);
         Object rhsInferredType = typeProcessor.inferType(rhsObj);
-        var    matcher         = getMatcherForOperator(op, rhs, rhsInferredType, rhsObj);
-        if (RestHelper.JSON_PATTERN.matcher(lhs).matches()) {
+        var matcher = getMatcherForOperator(op, rhs, rhsInferredType, rhsObj);
+        if (restHelper.hasRestJson(lhs)) {
             switch (op) {
                 case EXISTS -> restHelper.getLastResult().andExpect(MockMvcResultMatchers.jsonPath(lhs).exists());
                 case NOT_EXISTS ->
                         restHelper.getLastResult().andExpect(MockMvcResultMatchers.jsonPath(lhs).doesNotExist());
                 default -> restHelper.getLastResult().andExpect(MockMvcResultMatchers.jsonPath(lhs, matcher));
             }
-        } else
+        } else if (databaseHelper.hasDbJson(lhs)) {
+            Object dbResult = databaseHelper.processResult(lhs);
+            MatcherAssert.assertThat(dbResult, matcher);
+        } else {
             MatcherAssert.assertThat(lhsInferredType, matcher);
+        }
     }
 
     @SneakyThrows
@@ -174,14 +180,30 @@ public class AssertionHelperStepDefs {
         listKey = listKey.trim();
         Object rhsObj          = typeProcessor.parseType(rhs);
         Object rhsInferredType = typeProcessor.inferType(rhsObj);
-        var    matcher         = getMatcherForOperator(op, rhs, rhsInferredType, rhsObj);
-        switch (listMatch) {
-            case HAS_A_MATCH -> restHelper.getLastResult().andExpect(MockMvcResultMatchers.jsonPath(
-                    lhs, Matchers.hasItem(Matchers.hasEntry(Matchers.is(listKey), matcher))));
-            case HAS_NO_MATCH -> restHelper.getLastResult().andExpect(MockMvcResultMatchers.jsonPath(
-                    lhs, Matchers.not(Matchers.hasItem(Matchers.hasEntry(Matchers.is(listKey), matcher)))));
-            case ALL_MATCH -> restHelper.getLastResult().andExpect(MockMvcResultMatchers.jsonPath(
-                    lhs, Matchers.everyItem(Matchers.hasEntry(Matchers.is(listKey), matcher))));
+        var matcher = getMatcherForOperator(op, rhs, rhsInferredType, rhsObj);
+        if (restHelper.hasRestJson(lhs)) {
+            switch (listMatch) {
+                case HAS_A_MATCH -> restHelper.getLastResult().andExpect(MockMvcResultMatchers.jsonPath(
+                        lhs, Matchers.hasItem(Matchers.hasEntry(Matchers.is(listKey), matcher))));
+                case HAS_NO_MATCH -> restHelper.getLastResult().andExpect(MockMvcResultMatchers.jsonPath(
+                        lhs, Matchers.not(Matchers.hasItem(Matchers.hasEntry(Matchers.is(listKey), matcher)))));
+                case ALL_MATCH -> restHelper.getLastResult().andExpect(MockMvcResultMatchers.jsonPath(
+                        lhs, Matchers.everyItem(Matchers.hasEntry(Matchers.is(listKey), matcher))));
+            }
+        } else if (databaseHelper.hasDbJson(lhs)) {
+            Object dbResult = databaseHelper.processResult(lhs);
+            switch (listMatch) {
+                case HAS_A_MATCH ->
+                        MatcherAssert.assertThat(dbResult,
+                                                 Matchers.hasItem(Matchers.hasEntry(Matchers.is(listKey), matcher)));
+                case HAS_NO_MATCH -> MatcherAssert.assertThat(
+                        dbResult, Matchers.not(Matchers.hasItem(Matchers.hasEntry(Matchers.is(listKey), matcher))));
+                case ALL_MATCH ->
+                        MatcherAssert.assertThat(dbResult,
+                                                 Matchers.everyItem(Matchers.hasEntry(Matchers.is(listKey), matcher)));
+            }
+        } else {
+            throw new IllegalArgumentException("List match assertions require JSON input");
         }
     }
 

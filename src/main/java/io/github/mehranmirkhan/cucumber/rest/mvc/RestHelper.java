@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 @Component
 @RequiredArgsConstructor
 public class RestHelper {
-    public static final Pattern JSON_PATTERN = Pattern.compile("(\\$[.\\[]?\\S*)");
+    public static final Pattern JSON_PATTERN = Pattern.compile("(?<!\\$)(\\$(?!\\$)[.\\[]?\\S*)");
 
     private ResultActions lastResult;
 
@@ -36,6 +36,10 @@ public class RestHelper {
                            }
                        })
                        .orElse(null);
+    }
+
+    public boolean hasRestJson(String s) {
+        return JSON_PATTERN.matcher(s).matches();
     }
 
     public Object processResponse(String s) {
