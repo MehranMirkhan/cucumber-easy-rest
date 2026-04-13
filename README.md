@@ -42,13 +42,16 @@
 </div>
 
 ## Table of Contents
-- [About The Project](#-about-the-project)
-- [Getting Started](#-getting-started)
-- [Usage](#-usage)
-- [Contributing](#-contributing)
-- [License](#-license)
+
+- [Table of Contents](#table-of-contents)
+- [About The Project](#about-the-project)
+- [Getting Started](#getting-started)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## About The Project
+
 [Cucumber](https://cucumber.io/) is a tool that enables you to write tests in a human-readable format.
 However, it does not provide any built-in semantics for test steps—only pattern matching—leaving the implementation of test logic entirely up to the test writer.
 
@@ -56,22 +59,25 @@ This project addresses that gap by offering a set of predefined steps specifical
 With these ready-to-use steps, you can focus on writing meaningful test scenarios without worrying about the underlying implementation details.
 
 ## Getting Started
+
 To get started, simply add the following dependency to your project:
 
 pom.xml:
+
 ```xml
 <dependency>
     <groupId>io.github.mehranmirkhan</groupId>
     <artifactId>cucumber-easy-rest</artifactId>
-    <version>0.0.6</version>
+    <version>0.1.0</version>
     <scope>test</scope>
 </dependency>
 ```
 
 build.gradle:
+
 ```gradle
 dependencies {
-    testImplementation 'io.github.mehranmirkhan:cucumber-easy-rest:0.0.6'
+    testImplementation 'io.github.mehranmirkhan:cucumber-easy-rest:0.1.0'
 }
 ```
 
@@ -96,6 +102,7 @@ class CucumberEasyRestExampleFullApplicationTest {
 > The glue property should first include the package for the predefined cucumber-easy-rest steps, followed by your custom step definitions.
 
 ## Usage
+
 Create feature files in the specified package and write your test scenarios using the predefined steps.
 
 ```gherkin
@@ -125,6 +132,7 @@ for more details on writing feature files and using the predefined steps.
 > Please open an issue if you have suggestions or feedback.
 
 ## Contributing
+
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create.
 Any contributions you make are **greatly appreciated**.
 
@@ -132,10 +140,11 @@ Any contributions you make are **greatly appreciated**.
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request 
+5. Open a Pull Request
 
 Please make sure to update tests as appropriate.
 
 ## License
+
 Distributed under the Apache-2.0 License.
 See `LICENSE` for more information.
