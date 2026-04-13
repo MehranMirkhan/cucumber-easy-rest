@@ -10,6 +10,7 @@ import jakarta.persistence.Query;
 import jakarta.persistence.metamodel.EntityType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.transform.AliasToEntityMapResultTransformer;
@@ -22,6 +23,7 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -188,8 +190,13 @@ public class DatabaseHelperStepDefs {
 
     @When("^SQL:$")
     public void executeSql(List<Map<String, String>> sqlBody) {
-        String sql = (String) helpersManager.processTable(sqlBody).get(0).get("query");
-        if (sql == null) {
+        String sql = helpersManager.processTable(sqlBody)
+                                   .stream()
+                                   .map(entry -> entry.get("query"))
+                                   .map(String::valueOf)
+                                   .filter(StringUtils::isNotBlank)
+                                   .collect(Collectors.joining("\n"));
+        if (StringUtils.isBlank(sql)) {
             throw new RuntimeException("SQL query is required in the body with key 'query'");
         }
         Query query = entityManager.createNativeQuery(sql);
